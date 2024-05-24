@@ -1,6 +1,8 @@
 package entity
 
-/*type Rating struct {
+import "github.com/google/uuid"
+
+type Rating struct {
 	ID           uuid.UUID `gorm:"type:char(36);primary_key"`
 	UserID       uuid.UUID `gorm:"type:char(36)"`
 	User         User
@@ -8,4 +10,3 @@ package entity
 	RateableType string
 	Score        int
 }
-*/

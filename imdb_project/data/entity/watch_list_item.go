@@ -1,7 +1,9 @@
 package entity
 
-/*type WatchListItem struct {
-	ID        uuid.UUID `gorm:"type:char(36);primary_key"`
+import "github.com/google/uuid"
+
+type WatchListItem struct {
+	ID        uuid.UUID `gorm:"type:char(36);primaryKey"`
 	OwnerID   uuid.UUID `gorm:"type:char(36)"`
 	OwnerType string
 	ItemID    uuid.UUID
@@ -11,4 +13,3 @@ package entity
 	User      User
 	Ratings   []Rating `gorm:"polymorphic:Rateable;"`
 }
-*/
