@@ -18,8 +18,7 @@ type TVShow struct {
 	Trailers     []Trailer   `json:"trailers" gorm:"foreignKey:OwnerID"`
 	Companies    []Company   `json:"companies" gorm:"foreignKey:OwnerID"`
 	Celebs       []Celebrity `json:"celebs" gorm:"many2many:tvshow_celebs;"`
-	//WatchListItems []WatchListItem `json:"watch_list_items" gorm:"foreignKey:ItemID"`
-	Ratings   []Rating `json:"ratings" gorm:"foreignKey:RateableID"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Ratings      []Rating    `json:"ratings" gorm:"foreignKey:RateableID"`
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
