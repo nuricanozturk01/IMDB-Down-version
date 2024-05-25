@@ -13,6 +13,8 @@ type Trailer struct {
 }
 
 func (trailer *Trailer) BeforeCreate(tx *gorm.DB) (err error) {
-	trailer.ID = uuid.New()
+	if trailer.ID == uuid.Nil {
+		trailer.ID = uuid.New()
+	}
 	return
 }

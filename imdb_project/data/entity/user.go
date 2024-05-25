@@ -22,8 +22,10 @@ type User struct {
 
 // BeforeCreate Like Trigger in SQL
 func (usr *User) BeforeCreate(tx *gorm.DB) (err error) {
-	usr.ID = uuid.New()
-	usr.WatchList = WatchList{ID: uuid.New()}
+	if usr.ID == uuid.Nil {
+		usr.ID = uuid.New()
+		usr.WatchList = WatchList{ID: uuid.New()}
+	}
 	return
 }
 func (usr *User) GetID() uuid.UUID {

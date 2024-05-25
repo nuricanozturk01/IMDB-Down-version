@@ -13,6 +13,8 @@ type Photo struct {
 }
 
 func (photo *Photo) BeforeCreate(tx *gorm.DB) (err error) {
-	photo.ID = uuid.New()
+	if photo.ID == uuid.Nil {
+		photo.ID = uuid.New()
+	}
 	return
 }

@@ -15,8 +15,8 @@ type MovieDTO struct {
 	Trailers    []entity.Trailer   `json:"trailers"`
 	Companies   []entity.Company   `json:"companies"`
 	Celebs      []entity.Celebrity `json:"celebs"`
-	//Ratings     []entity.Rating    `json:"ratings"`
-	Photos []entity.Photo `json:"photos"`
+	Likes       []entity.Like      `json:"likes"`
+	Photos      []entity.Photo     `json:"photos"`
 }
 
 type MovieCreateDTO struct {
@@ -25,6 +25,6 @@ type MovieCreateDTO struct {
 	Trailers  []entity.Trailer
 	Companies []entity.Company
 	Celebs    []entity.Celebrity
-	//Ratings   []entity.Rating
-	Photos []entity.Photo
+	Likes     []entity.Like
+	Photos    []entity.Photo
 }

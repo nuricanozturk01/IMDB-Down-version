@@ -2,21 +2,66 @@ package app
 
 import (
 	"imdb_project/config"
+	databaseConfig "imdb_project/config/database"
+	"imdb_project/controller"
 	helper "imdb_project/data/dal"
+	"imdb_project/service"
 	"log"
 )
 
 func Run() {
 	config.Load()
-	_, err := helper.InitDb()
+	db, err := databaseConfig.InitDb()
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}
 	//router := routes.New()
 	//log.Fatal(http.ListenAndServe(":8080", router))
-	//imdbHelper := helper.New(db)
+	imdbHelper := helper.New(db)
+	movieService := service.NewMovieService(imdbHelper)
+	tvShowService := service.NewTvShowService(imdbHelper)
+	//celebrityService := service.NewCelebrityService(imdbHelper)
 
-	/*movie := entity.Movie{
+	movieController := controller.NewMovieController(movieService)
+	tvShowController := controller.NewTVShowController(tvShowService)
+
+	addEndpoints(movieController, tvShowController)
+
+	/*movie, err := imdbHelper.FindAllMovies()
+	if err != nil {
+		log.Fatal("Failed to fetch movies:", err)
+	}
+
+	firstMovie := movie[0]
+
+	celeb, err := imdbHelper.FindAllCelebrities()
+
+	if err != nil {
+		log.Fatal("Failed to fetch celebrities:", err)
+	}
+
+	firstCeleb, err := imdbHelper.FindCelebrityByID(celeb[0].ID)
+
+	if err != nil {
+		log.Fatal("Failed to fetch celebrity:", err)
+
+	}
+
+	fmt.Println(firstMovie.Name)
+	fmt.Println(firstCeleb.ID)
+
+	err = db.Model(&firstMovie).Association("Celebs").Replace(firstCeleb)
+	if err != nil {
+		log.Fatal("Failed to associate movie with celebrity:", err)
+	}*/
+
+	/*imdbHelper := helper.New(db)
+
+	result := imdbHelper.Search("Inc")
+
+	log.Println(result)
+
+	movie := entity.Movie{
 		Name: "Inception",
 		Photos: []entity.Photo{
 			{URL: "photo1.jpg"},
@@ -88,4 +133,8 @@ func Run() {
 		MediaType: "tv_shows",
 	}
 	db.Create(&like2)*/
+}
+
+func addEndpoints(movieController *controller.MovieController, showController *controller.TVShowController) {
+	
 }

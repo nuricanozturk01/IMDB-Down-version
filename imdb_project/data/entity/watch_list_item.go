@@ -13,6 +13,8 @@ type WatchListItem struct {
 }
 
 func (watchListItem *WatchListItem) BeforeCreate(tx *gorm.DB) (err error) {
-	watchListItem.ID = uuid.New()
+	if watchListItem.ID == uuid.Nil {
+		watchListItem.ID = uuid.New()
+	}
 	return
 }

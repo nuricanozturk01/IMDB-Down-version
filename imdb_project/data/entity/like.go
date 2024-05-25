@@ -13,6 +13,8 @@ type Like struct {
 }
 
 func (l *Like) BeforeCreate(tx *gorm.DB) (err error) {
-	l.ID = uuid.New()
+	if l.ID == uuid.Nil {
+		l.ID = uuid.New()
+	}
 	return
 }

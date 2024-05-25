@@ -24,14 +24,16 @@ type TVShow struct {
 	UpdatedAt    time.Time
 }
 
-func (tvShow *TVShow) BeforeCreate(tx *gorm.DB) (err error) {
-	tvShow.ID = uuid.New()
+func (tvs *TVShow) BeforeCreate(tx *gorm.DB) (err error) {
+	if tvs.ID == uuid.Nil {
+		tvs.ID = uuid.New()
+	}
 	return
 }
-func (m *TVShow) GetID() uuid.UUID {
-	return m.ID
+func (tvs *TVShow) GetID() uuid.UUID {
+	return tvs.ID
 }
 
-func (m *TVShow) GetName() string {
-	return m.Name
+func (tvs *TVShow) GetName() string {
+	return tvs.Name
 }

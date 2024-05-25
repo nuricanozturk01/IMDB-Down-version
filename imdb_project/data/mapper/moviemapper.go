@@ -13,9 +13,9 @@ func MovieCreateDtoToMovie(movieCreateDTO *dto.MovieCreateDTO) entity.Movie {
 		Year:      movieCreateDTO.Year,
 		Trailers:  movieCreateDTO.Trailers,
 		Companies: movieCreateDTO.Companies,
-		//Celebs:    movieCreateDTO.Celebs,
-		//Ratings:   movieCreateDTO.Ratings,
-		Photos: movieCreateDTO.Photos,
+		Celebs:    movieCreateDTO.Celebs,
+		Likes:     movieCreateDTO.Likes,
+		Photos:    movieCreateDTO.Photos,
 	}
 }
 
@@ -29,8 +29,8 @@ func MovieToMovieDTO(movie *entity.Movie) dto.MovieDTO {
 		ClickCount:  movie.ClickCount,
 		Trailers:    movie.Trailers,
 		Companies:   movie.Companies,
-		//Celebs:      movie.Celebs,
-		//Ratings:     movie.Ratings,
-		Photos: movie.Photos,
+		Celebs:      movie.Celebs,
+		Likes:       movie.Likes,
+		Photos:      movie.Photos,
 	}
 }

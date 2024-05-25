@@ -6,7 +6,7 @@ import (
 )
 
 type Celebrity struct {
-	ID      uuid.UUID `gorm:"type:char(36);primary_key"`
+	ID      uuid.UUID `gorm:"type:char(36);primaryKey"`
 	Name    string
 	Movies  []Movie  `gorm:"many2many:movie_celebs;"`
 	Photos  []Photo  `json:"photos" gorm:"polymorphic:Media;polymorphicValue:celebs"`
@@ -14,6 +14,8 @@ type Celebrity struct {
 }
 
 func (celebrity *Celebrity) BeforeCreate(tx *gorm.DB) (err error) {
-	celebrity.ID = uuid.New()
+	if celebrity.ID == uuid.Nil {
+		celebrity.ID = uuid.New()
+	}
 	return
 }
