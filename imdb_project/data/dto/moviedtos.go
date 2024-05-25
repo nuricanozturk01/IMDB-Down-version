@@ -15,17 +15,16 @@ type MovieDTO struct {
 	Trailers    []entity.Trailer   `json:"trailers"`
 	Companies   []entity.Company   `json:"companies"`
 	Celebs      []entity.Celebrity `json:"celebs"`
-	Ratings     []entity.Rating    `json:"ratings"`
-	Photos      []entity.Photo     `json:"photos"`
+	//Ratings     []entity.Rating    `json:"ratings"`
+	Photos []entity.Photo `json:"photos"`
 }
 
 type MovieCreateDTO struct {
-	ID        uuid.UUID          `json:"id"`
-	Title     string             `json:"name"`
-	Year      uint               `json:"year"`
-	Trailers  []entity.Trailer   `json:"trailers"`
-	Companies []entity.Company   `json:"companies"`
-	Celebs    []entity.Celebrity `json:"celebs"`
-	Ratings   []entity.Rating    `json:"ratings"`
-	Photos    []entity.Photo     `json:"photos"`
+	Name      string
+	Year      uint
+	Trailers  []entity.Trailer
+	Companies []entity.Company
+	Celebs    []entity.Celebrity
+	//Ratings   []entity.Rating
+	Photos []entity.Photo
 }

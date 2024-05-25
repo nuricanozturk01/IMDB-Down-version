@@ -41,8 +41,8 @@ func (r *GenericRepository[T, R]) FindByID(id R) (T, error) {
 }
 
 func (r *GenericRepository[T, R]) Create(entity *T) (*T, error) {
-	if err := r.Db.Create(entity).Error; err != nil {
-		log.Panic("Error while creating entity: ", err)
+	if err := r.Db.Create(&entity).Error; err != nil {
+		//log.Panic("Error while creating entity: ", err)
 		return entity, err
 	}
 	return entity, nil

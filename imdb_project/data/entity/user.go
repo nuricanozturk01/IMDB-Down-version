@@ -2,6 +2,7 @@ package entity
 
 import (
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -12,9 +13,23 @@ type User struct {
 	FirstName string    `json:"first_name" gorm:"not null;varchar(45)"`
 	LastName  string    `json:"last_name" gorm:"not null;varchar(45)"`
 	Email     string    `json:"email" gorm:"not null;varchar(80)"`
-	WatchList Watchlist `json:"watch_list"`
-	Ratings   []Rating  `json:"ratings" gorm:"foreignKey:UserID"`
-	Photos    []Photo   `json:"photos" gorm:"foreignKey:OwnerID"`
+	WatchList WatchList `gorm:"foreignKey:UserID"`
+	Likes     []Like    `gorm:"foreignKey:UserID"`
+	Photos    []Photo   `json:"photos" gorm:"polymorphic:Media;polymorphicValue:users"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+// BeforeCreate Like Trigger in SQL
+func (usr *User) BeforeCreate(tx *gorm.DB) (err error) {
+	usr.ID = uuid.New()
+	usr.WatchList = WatchList{ID: uuid.New()}
+	return
+}
+func (usr *User) GetID() uuid.UUID {
+	return usr.ID
+}
+
+func (usr *User) GetName() string {
+	return usr.Username
 }

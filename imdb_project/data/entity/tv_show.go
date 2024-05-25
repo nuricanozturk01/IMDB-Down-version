@@ -2,6 +2,7 @@ package entity
 
 import (
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -14,11 +15,23 @@ type TVShow struct {
 	ClickCount   uint32      `json:"click_count" gorm:"type:int;"`
 	EpisodeCount uint32      `json:"episode_count" gorm:"type:int;"`
 	SeasonCount  uint32      `json:"season_count" gorm:"type:int;"`
-	Photos       []Photo     `json:"photos" gorm:"foreignKey:OwnerID"`
-	Trailers     []Trailer   `json:"trailers" gorm:"foreignKey:OwnerID"`
-	Companies    []Company   `json:"companies" gorm:"foreignKey:OwnerID"`
+	Photos       []Photo     `json:"photos" gorm:"polymorphic:Media;polymorphicValue:tv_shows"`
+	Trailers     []Trailer   `json:"trailers" gorm:"polymorphic:Media;polymorphicValue:tv_shows"`
+	Companies    []Company   `json:"companies" gorm:"polymorphic:Media;polymorphicValue:tv_shows"`
 	Celebs       []Celebrity `json:"celebs" gorm:"many2many:tvshow_celebs;"`
-	Ratings      []Rating    `json:"ratings" gorm:"foreignKey:RateableID"`
+	Likes        []Like      `gorm:"polymorphic:Media;polymorphicValue:tv_shows"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
+}
+
+func (tvShow *TVShow) BeforeCreate(tx *gorm.DB) (err error) {
+	tvShow.ID = uuid.New()
+	return
+}
+func (m *TVShow) GetID() uuid.UUID {
+	return m.ID
+}
+
+func (m *TVShow) GetName() string {
+	return m.Name
 }

@@ -1,15 +1,18 @@
 package entity
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type WatchListItem struct {
-	ID        uuid.UUID `gorm:"type:char(36);primaryKey"`
-	OwnerID   uuid.UUID `gorm:"type:char(36)"`
-	OwnerType string
-	ItemID    uuid.UUID
-	ItemType  string
-	Title     string
-	UserID    uuid.UUID `gorm:"type:char(36)"`
-	User      User
-	Ratings   []Rating `gorm:"polymorphic:Rateable;"`
+	ID          uuid.UUID `gorm:"type:char(36);primaryKey"`
+	WatchListID uuid.UUID `gorm:"type:char(36)"`
+	MediaID     uuid.UUID `gorm:"type:char(36)"`
+	MediaType   string
+}
+
+func (watchListItem *WatchListItem) BeforeCreate(tx *gorm.DB) (err error) {
+	watchListItem.ID = uuid.New()
+	return
 }

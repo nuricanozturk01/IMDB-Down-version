@@ -17,6 +17,13 @@ type ImdbHelper struct {
 	movieRepository     repository.IGenericRepository[entity.Movie, uuid.UUID]
 	tvShowRepository    repository.IGenericRepository[entity.TVShow, uuid.UUID]
 	celebrityRepository repository.IGenericRepository[entity.Celebrity, uuid.UUID]
+	/*	trailerRepository       repository.IGenericRepository[entity.Trailer, uuid.UUID]
+		photoRepository         repository.IGenericRepository[entity.Photo, uuid.UUID]
+		ratingRepository        repository.IGenericRepository[entity.Rating, uuid.UUID]
+		companyRepository       repository.IGenericRepository[entity.Company, uuid.UUID]
+		userRepository          repository.IGenericRepository[entity.User, uuid.UUID]
+		watchlistRepository     repository.IGenericRepository[entity.WatchList, uuid.UUID]
+		watchlistItemRepository repository.IGenericRepository[entity.WatchListItem, uuid.UUID]*/
 }
 
 func New(db *gorm.DB) *ImdbHelper {
@@ -25,6 +32,13 @@ func New(db *gorm.DB) *ImdbHelper {
 		movieRepository:     repository.NewGenericRepository[entity.Movie, uuid.UUID](db),
 		tvShowRepository:    repository.NewGenericRepository[entity.TVShow, uuid.UUID](db),
 		celebrityRepository: repository.NewGenericRepository[entity.Celebrity, uuid.UUID](db),
+		/*		trailerRepository:       repository.NewGenericRepository[entity.Trailer, uuid.UUID](db),
+				photoRepository:         repository.NewGenericRepository[entity.Photo, uuid.UUID](db),
+				ratingRepository:        repository.NewGenericRepository[entity.Rating, uuid.UUID](db),
+				companyRepository:       repository.NewGenericRepository[entity.Company, uuid.UUID](db),
+				userRepository:          repository.NewGenericRepository[entity.User, uuid.UUID](db),
+				watchlistRepository:     repository.NewGenericRepository[entity.WatchList, uuid.UUID](db),
+				watchlistItemRepository: repository.NewGenericRepository[entity.WatchListItem, uuid.UUID](db),*/
 	}
 }
 
@@ -42,15 +56,15 @@ func InitDb() (*gorm.DB, error) {
 	}
 
 	err = db.AutoMigrate(
+		&entity.User{},
 		&entity.Celebrity{},
 		&entity.Company{},
 		&entity.Movie{},
 		&entity.Photo{},
-		&entity.Rating{},
+		&entity.Like{},
 		&entity.Trailer{},
 		&entity.TVShow{},
-		&entity.User{},
-		&entity.Watchlist{},
+		&entity.WatchList{},
 		&entity.WatchListItem{},
 	)
 
@@ -73,7 +87,16 @@ func (ih *ImdbHelper) FindMovieByID(id uuid.UUID) (entity.Movie, error) {
 }
 
 func (ih *ImdbHelper) CreateMovie(movie dto.MovieCreateDTO) (dto.MovieDTO, error) {
-	movieEntity := mapper.MovieCreateDtoToMovie(&movie)
+	movieEntity := entity.Movie{
+		ID:        uuid.New(),
+		Name:      movie.Name,
+		Year:      movie.Year,
+		Trailers:  movie.Trailers,
+		Companies: movie.Companies,
+		//Celebs:    movie.Celebs,
+		//Ratings:   movie.Ratings,
+		Photos: movie.Photos,
+	}
 
 	result, err := ih.movieRepository.Create(&movieEntity)
 
@@ -173,6 +196,7 @@ func (ih *ImdbHelper) SearchCelebrityByKeyword(keyword string) ([]dto.CelebrityD
 	return celebrityDTOs, nil
 }
 
+// Function Pointer to Return a Function that Returns a Function
 func searchQueryCallback(keyword string) func(*gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		return db.Where("name LIKE ?", "%"+keyword+"%")
@@ -184,6 +208,7 @@ func (ih *ImdbHelper) Search(keyword string) dto.SearchDTO {
 	if err != nil {
 		log.Panic("Failed to search movie by keyword:", err)
 	}
+
 	tvShows, err := ih.SearchTvShowByKeyword(keyword)
 	if err != nil {
 		log.Panic("Failed to search tv show by keyword:", err)
@@ -194,10 +219,5 @@ func (ih *ImdbHelper) Search(keyword string) dto.SearchDTO {
 		log.Panic("Failed to search celebrity by keyword:", err)
 	}
 
-	return dto.SearchDTO{
-		Keyword: keyword,
-		Movies:  movies,
-		TvShows: tvShows,
-		Celebs:  celebs,
-	}
+	return dto.SearchDTO{Keyword: keyword, Movies: movies, TvShows: tvShows, Celebs: celebs}
 }

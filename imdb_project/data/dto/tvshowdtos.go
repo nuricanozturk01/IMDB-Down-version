@@ -29,5 +29,5 @@ type TvShowDTO struct {
 	Trailers     []entity.Trailer   `json:"trailers"`
 	Companies    []entity.Company   `json:"companies"`
 	Celebs       []entity.Celebrity `json:"celebs"`
-	Ratings      []entity.Rating    `json:"ratings"`
+	//Ratings      []entity.Rating    `json:"ratings"`
 }
