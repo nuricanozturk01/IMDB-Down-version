@@ -20,11 +20,11 @@ type MovieDTO struct {
 }
 
 type MovieCreateDTO struct {
-	Name      string
-	Year      uint
-	Trailers  []entity.Trailer
-	Companies []entity.Company
-	Celebs    []entity.Celebrity
-	Likes     []entity.Like
-	Photos    []entity.Photo
+	Name      string             `json:"name" validate:"required"`
+	Year      uint               `json:"year" validate:"required"`
+	Trailers  []entity.Trailer   `json:"trailers" validate:"required"`
+	Companies []entity.Company   `json:"companies" validate:"required"`
+	Celebs    []entity.Celebrity `json:"celebs" validate:"required"`
+	Likes     []entity.Like      `json:"likes"`
+	Photos    []entity.Photo     `json:"photos" validate:"required"`
 }

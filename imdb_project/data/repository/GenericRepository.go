@@ -7,6 +7,7 @@ import (
 
 type IGenericRepository[T any, R any] interface {
 	FindAll() ([]T, error)
+	FindAllEager(eagerAssociations []string) ([]T, error)
 	FindByID(id R) (T, error)
 	Create(entity *T) (*T, error)
 	Update(entity *T) (*T, error)
@@ -121,16 +122,30 @@ func (repository *GenericRepository[T, R]) FindOneByFilterEager(predicate func(*
 	return &entity, nil
 }
 
+func (repository *GenericRepository[T, R]) FindAllEager(eagerAssociations []string) ([]T, error) {
+	var result []T
+
+	query := repository.Db
+
+	for _, association := range eagerAssociations {
+		query = query.Preload(association)
+	}
+
+	if err := query.Find(&result).Error; err != nil {
+		log.Panic("Error while fetching entities: ", err)
+		return nil, err
+	}
+
+	return result, nil
+
+}
+
 func (repository *GenericRepository[T, R]) FindByIdEager(id R, eagerAssociations []string) (T, error) {
 	var entity T
 
 	query := repository.Db
 
 	ForEach(eagerAssociations, func(association string) { query = query.Preload(association) })
-
-	/*for _, association := range eagerAssociations {
-		query = query.Preload(association)
-	}*/
 
 	if err := query.First(&entity, id).Error; err != nil {
 		log.Panic("Error while fetching entity: ", err)
@@ -143,11 +158,5 @@ func (repository *GenericRepository[T, R]) FindByIdEager(id R, eagerAssociations
 func ForEach[T any](slice []T, f func(T)) {
 	for _, v := range slice {
 		f(v)
-	}
-}
-
-func ForEachIndexed[T any](slice []T, f func(int, T)) {
-	for i, v := range slice {
-		f(i, v)
 	}
 }

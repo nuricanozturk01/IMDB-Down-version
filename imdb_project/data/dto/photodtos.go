@@ -1,7 +1,7 @@
 package dto
 
 type PhotoCreateDTO struct {
-	URL string `json:"url" binding:"required"`
+	URL string `json:"url" validate:"required"`
 }
 
 type PhotoDTO struct {

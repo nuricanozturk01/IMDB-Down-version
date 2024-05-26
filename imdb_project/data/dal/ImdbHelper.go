@@ -43,7 +43,8 @@ func (serviceHelper *ServiceHelper) CreateTvShow(tvShow *dto.TvShowCreateDTO) dt
 }
 
 func (serviceHelper *ServiceHelper) FindAllMovies() dto.ResponseDTO[[]dto.MovieDTO] {
-	movies, err := serviceHelper.MovieRepository.FindAll()
+
+	movies, err := serviceHelper.MovieRepository.FindAllEager([]string{"Trailers", "Companies", "Celebs", "Photos", "Likes"})
 
 	if err != nil {
 		log.Println("Failed to find movies:", err)
@@ -94,7 +95,7 @@ func (serviceHelper *ServiceHelper) FindAllCelebrities() dto.ResponseDTO[[]dto.C
 }
 
 func (serviceHelper *ServiceHelper) FindMovieByID(id uuid.UUID) dto.ResponseDTO[dto.MovieDTO] {
-	movie, err := serviceHelper.MovieRepository.FindByID(id)
+	movie, err := serviceHelper.MovieRepository.FindByIdEager(id, []string{"Trailers", "Companies", "Celebs", "Photos", "Likes"})
 
 	if err != nil {
 		log.Println("Failed to find movie:", err)

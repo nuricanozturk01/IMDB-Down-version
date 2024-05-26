@@ -13,7 +13,7 @@ type IMovieService interface {
 	DislikeMovie(movieId, userId uuid.UUID) dto.ResponseDTO[bool]
 	FindAllMovies() dto.ResponseDTO[[]dto.MovieDTO]
 	FindMovieById(movieId uuid.UUID) dto.ResponseDTO[dto.MovieDTO]
-	AddMovieToWatchList(movieId uuid.UUID, watchListId uuid.UUID) dto.ResponseDTO[bool]
+	AddMovieToWatchList(movieId uuid.UUID, mediaID uuid.UUID) dto.ResponseDTO[bool]
 	RemoveMovieFromWatchList(movieId uuid.UUID, watchListId uuid.UUID) dto.ResponseDTO[bool]
 }
 
@@ -45,8 +45,8 @@ func (service *MovieService) FindMovieById(movieId uuid.UUID) dto.ResponseDTO[dt
 	return service.ServiceHelper.FindMovieByID(movieId)
 }
 
-func (service *MovieService) AddMovieToWatchList(movieId uuid.UUID, watchListId uuid.UUID) dto.ResponseDTO[bool] {
-	return service.ServiceHelper.AddWatchList(movieId, watchListId, enum.MovieType)
+func (service *MovieService) AddMovieToWatchList(movieId uuid.UUID, mediaID uuid.UUID) dto.ResponseDTO[bool] {
+	return service.ServiceHelper.AddWatchList(movieId, mediaID, enum.MovieType)
 }
 
 func (service *MovieService) RemoveMovieFromWatchList(movieId uuid.UUID, watchListId uuid.UUID) dto.ResponseDTO[bool] {

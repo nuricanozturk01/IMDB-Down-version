@@ -1,21 +1,22 @@
 package mapper
 
 import (
-	"github.com/google/uuid"
 	"imdb_project/data/dto"
 	"imdb_project/data/entity"
 )
 
 func MovieCreateDtoToMovie(movieCreateDTO *dto.MovieCreateDTO) entity.Movie {
 	return entity.Movie{
-		ID:        uuid.New(),
-		Name:      movieCreateDTO.Name,
-		Year:      movieCreateDTO.Year,
-		Trailers:  movieCreateDTO.Trailers,
-		Companies: movieCreateDTO.Companies,
-		Celebs:    movieCreateDTO.Celebs,
-		Likes:     movieCreateDTO.Likes,
-		Photos:    movieCreateDTO.Photos,
+		Name:        movieCreateDTO.Name,
+		AverageRate: 0,
+		Year:        movieCreateDTO.Year,
+		Popularity:  0,
+		ClickCount:  0,
+		Trailers:    movieCreateDTO.Trailers,
+		Companies:   movieCreateDTO.Companies,
+		Celebs:      movieCreateDTO.Celebs,
+		Likes:       movieCreateDTO.Likes,
+		Photos:      movieCreateDTO.Photos,
 	}
 }
 

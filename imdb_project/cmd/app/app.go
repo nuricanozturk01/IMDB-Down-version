@@ -1,6 +1,9 @@
 package app
 
 import (
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"imdb_project/config"
 	databaseConfig "imdb_project/config/database"
 	"imdb_project/controller"
@@ -9,23 +12,45 @@ import (
 	"log"
 )
 
+var validate *validator.Validate
+
+func init() {
+	validate = validator.New()
+}
+
 func Run() {
+	// Load the configuration
 	config.Load()
+
+	// Initialize the database
 	db, err := databaseConfig.InitDb()
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}
-	//router := routes.New()
-	//log.Fatal(http.ListenAndServe(":8080", router))
+
+	// HTTP Layer
+	engine := gin.New()
+
+	// Service Helper (Facade Pattern)
 	imdbHelper := helper.New(db)
+
+	// Service Layer
 	movieService := service.NewMovieService(imdbHelper)
 	tvShowService := service.NewTvShowService(imdbHelper)
-	//celebrityService := service.NewCelebrityService(imdbHelper)
+	searchService := service.NewSearchService(imdbHelper)
+	userService := service.NewUserService(imdbHelper)
 
-	movieController := controller.NewMovieController(movieService)
-	tvShowController := controller.NewTVShowController(tvShowService)
+	// Controller Layer
+	controller.NewMovieController(movieService, validate).SubscribeEndpoints(engine)
+	controller.NewTVShowController(tvShowService, validate).SubscribeEndpoints(engine)
+	controller.NewSearchController(searchService).SubscribeEndpoints(engine)
+	controller.NewUserController(userService, validate).SubscribeEndpoints(engine)
 
-	addEndpoints(movieController, tvShowController)
+	// Run the server
+	err = engine.Run(":5050")
+	if err != nil {
+		fmt.Printf("Message:%s\n", err.Error())
+	}
 
 	/*movie, err := imdbHelper.FindAllMovies()
 	if err != nil {
@@ -133,8 +158,4 @@ func Run() {
 		MediaType: "tv_shows",
 	}
 	db.Create(&like2)*/
-}
-
-func addEndpoints(movieController *controller.MovieController, showController *controller.TVShowController) {
-	
 }
