@@ -21,6 +21,18 @@ func searchWatchListCallback(watchListID, mediaID uuid.UUID) func(*gorm.DB) *gor
 		return db.Where("watch_list_id = ? AND media_id = ?", watchListID, mediaID)
 	}
 }
+
+func findByEmailCallback(email string) func(*gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Where("email = ?", email)
+	}
+}
+
+func findByUsernameCallback(username string) func(*gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Where("username = ?", username)
+	}
+}
 func (serviceHelper *ServiceHelper) findWatchListItem(watchListID, mediaID uuid.UUID, mediaType string) (entity.WatchListItem, error) {
 	switch mediaType {
 	case enum.MovieType:

@@ -20,7 +20,6 @@ type User struct {
 	UpdatedAt time.Time
 }
 
-// BeforeCreate Like Trigger in SQL
 func (usr *User) BeforeCreate(tx *gorm.DB) (err error) {
 	if usr.ID == uuid.Nil {
 		usr.ID = uuid.New()

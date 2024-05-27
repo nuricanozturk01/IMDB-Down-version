@@ -14,11 +14,11 @@ type UserController struct {
 }
 
 func (c *UserController) SubscribeEndpoints(engine *gin.Engine) {
-	engine.POST("/user", c.CreateUser)
-	engine.GET("/user/:id", c.FindUserById)
-	engine.GET("/user", c.FindAllUsers)
-	engine.GET("/user/username/:username", c.FindUserByUsername)
-	engine.GET("/user/email/:email", c.FindUserByEmail)
+	engine.POST("/api/v1/user", c.CreateUser)
+	engine.GET("/api/v1/user/id", c.FindUserById)
+	engine.GET("/api/v1/user/all", c.FindAllUsers)
+	engine.GET("/api/v1/user/username", c.FindUserByUsername)
+	engine.GET("/api/v1/user/email", c.FindUserByEmail)
 }
 
 func NewUserController(userService service.IUserService, validator *validator.Validate) *UserController {
@@ -46,7 +46,7 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 }
 
 func (c *UserController) FindUserById(ctx *gin.Context) {
-	userID := ctx.Param("id")
+	userID := ctx.Query("id")
 	response := c.UserService.FindUserById(userID)
 	ctx.JSON(int(response.StatusCode), response)
 }
@@ -57,13 +57,13 @@ func (c *UserController) FindAllUsers(ctx *gin.Context) {
 }
 
 func (c *UserController) FindUserByUsername(ctx *gin.Context) {
-	username := ctx.Param("username")
+	username := ctx.Query("username")
 	response := c.UserService.FindUserByUsername(username)
 	ctx.JSON(int(response.StatusCode), response)
 }
 
 func (c *UserController) FindUserByEmail(ctx *gin.Context) {
-	email := ctx.Param("email")
+	email := ctx.Query("email")
 	response := c.UserService.FindUserByEmail(email)
 	ctx.JSON(int(response.StatusCode), response)
 }

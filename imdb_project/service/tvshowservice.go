@@ -52,3 +52,5 @@ func (service *TvShowService) AddTvShowToWatchList(tvShowID, watchListID uuid.UU
 func (service *TvShowService) RemoveTvShowFromWatchList(tvShowID, watchListID uuid.UUID) dto.ResponseDTO[bool] {
 	return service.ServiceHelper.RemoveWatchList(tvShowID, watchListID, enum.TvShowType)
 }
+
+//...

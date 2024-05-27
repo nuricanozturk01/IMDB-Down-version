@@ -16,13 +16,13 @@ type MovieController struct {
 }
 
 func (c *MovieController) SubscribeEndpoints(engine *gin.Engine) {
-	engine.POST("/movie", c.CreateMovie)
-	engine.POST("/movie/like", c.LikeMovie)
-	engine.POST("/movie/dislike", c.DislikeMovie)
-	engine.GET("/movie", c.FindAllMovies)
-	engine.GET("/movie/:id", c.FindMovieById)
-	engine.POST("/movie/watchlist", c.AddMovieToWatchList)
-	engine.DELETE("/movie/watchlist", c.RemoveMovieFromWatchList)
+	engine.POST("/api/v1/movie/create", c.CreateMovie)
+	engine.POST("/api/v1/movie/like", c.LikeMovie)
+	engine.POST("/api/v1/movie/dislike", c.DislikeMovie)
+	engine.GET("/api/v1/movie/all", c.FindAllMovies)
+	engine.GET("/api/v1/movie/:id", c.FindMovieById)
+	engine.POST("/api/v1/movie/watchlist/add", c.AddMovieToWatchList)
+	engine.DELETE("/api/v1/movie/watchlist/delete", c.RemoveMovieFromWatchList)
 }
 
 func NewMovieController(movieService service.IMovieService, validator *validator.Validate) *MovieController {

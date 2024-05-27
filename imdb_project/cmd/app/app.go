@@ -41,10 +41,10 @@ func Run() {
 	userService := service.NewUserService(imdbHelper)
 
 	// Controller Layer
+	controller.NewUserController(userService, validate).SubscribeEndpoints(engine)
 	controller.NewMovieController(movieService, validate).SubscribeEndpoints(engine)
 	controller.NewTVShowController(tvShowService, validate).SubscribeEndpoints(engine)
-	controller.NewSearchController(searchService).SubscribeEndpoints(engine)
-	controller.NewUserController(userService, validate).SubscribeEndpoints(engine)
+	controller.NewSearchController(searchService, validate).SubscribeEndpoints(engine)
 
 	// Run the server
 	err = engine.Run(":5050")

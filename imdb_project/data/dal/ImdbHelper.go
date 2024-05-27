@@ -2,6 +2,7 @@ package dal
 
 import (
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"imdb_project/data/dto"
 	"imdb_project/data/entity"
 	"imdb_project/data/mapper"
@@ -224,6 +225,97 @@ func (serviceHelper *ServiceHelper) RemoveWatchList(userID, mediaID uuid.UUID, m
 
 	result := true
 	return dto.ResponseDTO[bool]{Message: "Item removed from watch list successfully", StatusCode: http.StatusOK, Data: &result}
+}
+
+func (serviceHelper *ServiceHelper) CreateUser(user *dto.UserCreateDTO) dto.ResponseDTO[dto.UserDTO] {
+
+	userEntity := mapper.UserCreateDTOToUser(user)
+	hashedPassword, err := util.HashPassword(user.Password)
+
+	if err != nil {
+		log.Printf("Failed to hash password: %v", err)
+		return dto.ResponseDTO[dto.UserDTO]{Message: "Failed to hash password", StatusCode: http.StatusInternalServerError, Data: nil}
+	}
+
+	userEntity.Password = hashedPassword
+	result, err := serviceHelper.UserRepository.Create(&userEntity)
+
+	if err != nil {
+		log.Printf("Failed to create user: %v", err)
+		return dto.ResponseDTO[dto.UserDTO]{Message: "Failed to create user", StatusCode: http.StatusInternalServerError, Data: nil}
+	}
+
+	userDTO := mapper.UserToUserDTO(result)
+
+	return dto.ResponseDTO[dto.UserDTO]{Message: "User created successfully", StatusCode: http.StatusCreated, Data: &userDTO}
+}
+
+func (serviceHelper *ServiceHelper) FindUserByID(userID string) dto.ResponseDTO[dto.UserDTO] {
+	id, err := uuid.Parse(userID)
+
+	if err != nil {
+		log.Printf("Failed to parse UUID: %v", err)
+		return dto.ResponseDTO[dto.UserDTO]{Message: "Failed to parse UUID", StatusCode: http.StatusBadRequest, Data: nil}
+	}
+
+	user, err := serviceHelper.UserRepository.FindByID(id)
+	if err != nil {
+		log.Printf("Failed to find user: %v", err)
+		return dto.ResponseDTO[dto.UserDTO]{Message: "Failed to find user", StatusCode: http.StatusInternalServerError, Data: nil}
+	}
+
+	userDTO := mapper.UserToUserDTO(&user)
+
+	return dto.ResponseDTO[dto.UserDTO]{Message: "User fetched successfully", StatusCode: http.StatusOK, Data: &userDTO}
+}
+
+func (serviceHelper *ServiceHelper) FindAllUsers() dto.ResponseDTO[[]dto.UserDTO] {
+
+	users, err := serviceHelper.UserRepository.FindAll()
+
+	if err != nil {
+		log.Println("Failed to find users:", err)
+		return dto.ResponseDTO[[]dto.UserDTO]{Message: "Failed to fetch users", StatusCode: http.StatusInternalServerError, Data: nil}
+	}
+
+	var userDTOs []dto.UserDTO
+
+	for _, user := range users {
+		userDTOs = append(userDTOs, mapper.UserToUserDTO(&user))
+	}
+
+	return dto.ResponseDTO[[]dto.UserDTO]{Message: "Users fetched successfully", StatusCode: http.StatusOK, Data: &userDTOs}
+}
+
+func (serviceHelper *ServiceHelper) FindUserByUsername(username string) dto.ResponseDTO[dto.UserDTO] {
+
+	user, err := serviceHelper.UserRepository.FindOneByFilter(func(db *gorm.DB) *gorm.DB {
+		return db.Where("username = ?", username)
+	})
+
+	if err != nil {
+		log.Println("Failed to find user:", err)
+		return dto.ResponseDTO[dto.UserDTO]{Message: "Failed to fetch user", StatusCode: http.StatusInternalServerError, Data: nil}
+	}
+
+	userDTO := mapper.UserToUserDTO(user)
+
+	return dto.ResponseDTO[dto.UserDTO]{Message: "User fetched successfully", StatusCode: http.StatusOK, Data: &userDTO}
+
+}
+
+func (serviceHelper *ServiceHelper) FindUserByEmail(email string) dto.ResponseDTO[dto.UserDTO] {
+
+	user, err := serviceHelper.UserRepository.FindOneByFilter(findByEmailCallback(email))
+
+	if err != nil {
+		log.Println("Failed to find user:", err)
+		return dto.ResponseDTO[dto.UserDTO]{Message: "Failed to fetch user", StatusCode: http.StatusInternalServerError, Data: nil}
+	}
+
+	userDTO := mapper.UserToUserDTO(user)
+
+	return dto.ResponseDTO[dto.UserDTO]{Message: "User fetched successfully", StatusCode: http.StatusOK, Data: &userDTO}
 }
 
 //...
