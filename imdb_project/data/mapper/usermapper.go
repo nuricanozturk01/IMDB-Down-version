@@ -47,3 +47,15 @@ func UserToUserFullDTO(user *entity.User) dto.UserFullDTO {
 		Likes:     likes,
 	}
 }
+
+func GoogleUserToUserCreateDTO(user *dto.GoogleUserDTO) *dto.UserCreateDTO {
+	return &dto.UserCreateDTO{
+		FirstName: user.GivenName,
+		LastName:  user.FamilyName,
+		Email:     user.Email,
+		Picture:   user.Picture,
+		Locale:    user.Locale,
+		GoogleID:  user.ID,
+		Password:  "from-google",
+	}
+}

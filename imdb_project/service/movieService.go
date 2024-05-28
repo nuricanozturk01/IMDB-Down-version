@@ -5,6 +5,8 @@ import (
 	"imdb_project/data/dal"
 	"imdb_project/data/dto"
 	"imdb_project/data/entity/enum"
+	"imdb_project/data/mapper"
+	"net/http"
 )
 
 type IMovieService interface {
@@ -26,31 +28,58 @@ func NewMovieService(serviceHelper *dal.ImdbHelper) *MovieService {
 }
 
 func (service *MovieService) CreateMovie(movie *dto.MovieCreateDTO) dto.ResponseDTO[dto.MovieDTO] {
-	return service.ServiceHelper.CreateMovie(movie)
+
+	movieEntity := service.ServiceHelper.CreateMovie(movie)
+
+	movieDTO := mapper.MovieToMovieDTO(movieEntity)
+
+	return dto.ResponseDTO[dto.MovieDTO]{Message: "Movie created successfully", StatusCode: http.StatusCreated, Data: &movieDTO}
 }
 
 func (service *MovieService) LikeMovie(movieId, userId uuid.UUID) dto.ResponseDTO[bool] {
-	return service.ServiceHelper.Like(movieId, userId, enum.MovieType)
+
+	result := service.ServiceHelper.Like(movieId, userId, enum.MovieType)
+
+	return dto.ResponseDTO[bool]{Message: "Movie liked successfully", StatusCode: http.StatusOK, Data: &result}
 }
 
 func (service *MovieService) DislikeMovie(movieId, userId uuid.UUID) dto.ResponseDTO[bool] {
-	return service.ServiceHelper.Unlike(movieId, userId, enum.MovieType)
+
+	result := service.ServiceHelper.Unlike(movieId, userId, enum.MovieType)
+
+	return dto.ResponseDTO[bool]{Message: "Movie unliked successfully", StatusCode: http.StatusOK, Data: &result}
 }
 
 func (service *MovieService) FindAllMovies() dto.ResponseDTO[[]dto.MovieDTO] {
-	return service.ServiceHelper.FindAllMovies()
+
+	movies := service.ServiceHelper.FindAllMovies()
+
+	moviesDTO := mapper.ToMoviesDTO(movies)
+
+	return dto.ResponseDTO[[]dto.MovieDTO]{Message: "Movies fetched successfully", StatusCode: http.StatusOK, Data: &moviesDTO}
 }
 
 func (service *MovieService) FindMovieById(movieId uuid.UUID) dto.ResponseDTO[dto.MovieDTO] {
-	return service.ServiceHelper.FindMovieByID(movieId)
+
+	movie := service.ServiceHelper.FindMovieByID(movieId)
+
+	movieDTO := mapper.MovieToMovieDTO(movie)
+
+	return dto.ResponseDTO[dto.MovieDTO]{Message: "Movie fetched successfully", StatusCode: http.StatusOK, Data: &movieDTO}
 }
 
 func (service *MovieService) AddMovieToWatchList(movieId uuid.UUID, mediaID uuid.UUID) dto.ResponseDTO[bool] {
-	return service.ServiceHelper.AddWatchList(movieId, mediaID, enum.MovieType)
+
+	result := service.ServiceHelper.AddWatchList(movieId, mediaID, enum.MovieType)
+
+	return dto.ResponseDTO[bool]{Message: "Item added to watch list successfully", StatusCode: http.StatusOK, Data: &result}
 }
 
 func (service *MovieService) RemoveMovieFromWatchList(movieId uuid.UUID, watchListId uuid.UUID) dto.ResponseDTO[bool] {
-	return service.ServiceHelper.RemoveWatchList(movieId, watchListId, enum.MovieType)
+
+	result := service.ServiceHelper.RemoveWatchList(movieId, watchListId, enum.MovieType)
+
+	return dto.ResponseDTO[bool]{Message: "Item removed from watch list successfully", StatusCode: http.StatusOK, Data: &result}
 }
 
 //...

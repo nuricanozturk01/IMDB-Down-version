@@ -35,3 +35,13 @@ func MovieToMovieDTO(movie *entity.Movie) dto.MovieDTO {
 		Photos:      movie.Photos,
 	}
 }
+
+func ToMoviesDTO(movies []entity.Movie) []dto.MovieDTO {
+	var movieDTOs []dto.MovieDTO
+
+	for _, movie := range movies {
+		movieDTOs = append(movieDTOs, MovieToMovieDTO(&movie))
+	}
+
+	return movieDTOs
+}

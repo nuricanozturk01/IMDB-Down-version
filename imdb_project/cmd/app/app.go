@@ -4,15 +4,19 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/gorilla/sessions"
 	"imdb_project/config"
 	databaseConfig "imdb_project/config/database"
+	"imdb_project/config/middleware"
 	"imdb_project/controller"
 	helper "imdb_project/data/dal"
 	"imdb_project/service"
 	"log"
+	"os"
 )
 
 var validate *validator.Validate
+var store *sessions.CookieStore
 
 func init() {
 	validate = validator.New()
@@ -31,7 +35,10 @@ func Run() {
 	// HTTP Layer
 	engine := gin.New()
 
-	// Service Helper (Facade Pattern)
+	// start the session store
+	store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+
+	// Service Helper (Facade Pattern) (for Repository Layer)
 	imdbHelper := helper.New(db)
 
 	// Service Layer
@@ -39,15 +46,34 @@ func Run() {
 	tvShowService := service.NewTvShowService(imdbHelper)
 	searchService := service.NewSearchService(imdbHelper)
 	userService := service.NewUserService(imdbHelper)
+	authenticationService := service.NewAuthenticationService(imdbHelper)
+	celebrityService := service.NewCelebrityService(imdbHelper)
+
+	// Middleware Layer
+	authMiddleware := middleware.NewAuthMiddleware(store)
 
 	// Controller Layer
-	controller.NewUserController(userService, validate).SubscribeEndpoints(engine)
-	controller.NewMovieController(movieService, validate).SubscribeEndpoints(engine)
-	controller.NewTVShowController(tvShowService, validate).SubscribeEndpoints(engine)
-	controller.NewSearchController(searchService, validate).SubscribeEndpoints(engine)
+	authController := controller.NewAuthController(authenticationService, validate, store)
+	userController := controller.NewUserController(userService, validate)
+	movieController := controller.NewMovieController(movieService, validate)
+	tvShowController := controller.NewTVShowController(tvShowService, validate)
+	searchController := controller.NewSearchController(searchService, celebrityService, validate)
+
+	// Public routes
+	authController.SubscribeEndpoints(engine)
+
+	// Protected routes
+	protected := engine.Group("/")
+	protected.Use(authMiddleware.Middleware())
+
+	userController.SubscribeEndpoints(protected)
+	movieController.SubscribeEndpoints(protected)
+	tvShowController.SubscribeEndpoints(protected)
+	searchController.SubscribeEndpoints(protected)
 
 	// Run the server
 	err = engine.Run(":5050")
+
 	if err != nil {
 		fmt.Printf("Message:%s\n", err.Error())
 	}

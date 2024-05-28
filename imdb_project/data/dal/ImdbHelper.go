@@ -8,10 +8,9 @@ import (
 	"imdb_project/data/mapper"
 	"imdb_project/util"
 	"log"
-	"net/http"
 )
 
-func (serviceHelper *ServiceHelper) CreateMovie(movie *dto.MovieCreateDTO) dto.ResponseDTO[dto.MovieDTO] {
+func (serviceHelper *ServiceHelper) CreateMovie(movie *dto.MovieCreateDTO) *entity.Movie {
 
 	movieEntity := mapper.MovieCreateDtoToMovie(movie)
 
@@ -19,15 +18,13 @@ func (serviceHelper *ServiceHelper) CreateMovie(movie *dto.MovieCreateDTO) dto.R
 
 	if err != nil {
 		log.Printf("Failed to create movie: %v", err)
-		return dto.ResponseDTO[dto.MovieDTO]{Message: "Failed to create movie", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	movieDTO := mapper.MovieToMovieDTO(result)
-
-	return dto.ResponseDTO[dto.MovieDTO]{Message: "Movie created successfully", StatusCode: http.StatusCreated, Data: &movieDTO}
+	return result
 }
 
-func (serviceHelper *ServiceHelper) CreateTvShow(tvShow *dto.TvShowCreateDTO) dto.ResponseDTO[dto.TvShowDTO] {
+func (serviceHelper *ServiceHelper) CreateTvShow(tvShow *dto.TvShowCreateDTO) *entity.TVShow {
 
 	tvShowEntity := mapper.TvShowCreateDtoToTvShow(tvShow)
 
@@ -35,106 +32,80 @@ func (serviceHelper *ServiceHelper) CreateTvShow(tvShow *dto.TvShowCreateDTO) dt
 
 	if err != nil {
 		log.Printf("Failed to create tv show: %v", err)
-		return dto.ResponseDTO[dto.TvShowDTO]{Message: "Failed to create tv show", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	tvShowDTO := mapper.TvShowToTvShowDTO(result)
-
-	return dto.ResponseDTO[dto.TvShowDTO]{Message: "Tv show created successfully", StatusCode: http.StatusCreated, Data: &tvShowDTO}
+	return result
 }
 
-func (serviceHelper *ServiceHelper) FindAllMovies() dto.ResponseDTO[[]dto.MovieDTO] {
+func (serviceHelper *ServiceHelper) FindAllMovies() []entity.Movie {
 
 	movies, err := serviceHelper.MovieRepository.FindAllEager([]string{"Trailers", "Companies", "Celebs", "Photos", "Likes"})
 
 	if err != nil {
 		log.Println("Failed to find movies:", err)
-		return dto.ResponseDTO[[]dto.MovieDTO]{Message: "Failed to fetch movies", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	var movieDTOs []dto.MovieDTO
-
-	for _, movie := range movies {
-		movieDTOs = append(movieDTOs, mapper.MovieToMovieDTO(&movie))
-	}
-
-	return dto.ResponseDTO[[]dto.MovieDTO]{Message: "Movies fetched successfully", StatusCode: http.StatusOK, Data: &movieDTOs}
+	return movies
 }
 
-func (serviceHelper *ServiceHelper) FindAllTvShows() dto.ResponseDTO[[]dto.TvShowDTO] {
+func (serviceHelper *ServiceHelper) FindAllTvShows() []entity.TVShow {
 	tvShows, err := serviceHelper.TvShowRepository.FindAll()
 
 	if err != nil {
 		log.Println("Failed to find tv shows:", err)
-		return dto.ResponseDTO[[]dto.TvShowDTO]{Message: "Failed to fetch tv shows", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	var tvShowDTOs []dto.TvShowDTO
-
-	for _, tvShow := range tvShows {
-		tvShowDTOs = append(tvShowDTOs, mapper.TvShowToTvShowDTO(&tvShow))
-	}
-
-	return dto.ResponseDTO[[]dto.TvShowDTO]{Message: "Tv shows fetched successfully", StatusCode: http.StatusOK, Data: &tvShowDTOs}
+	return tvShows
 }
 
-func (serviceHelper *ServiceHelper) FindAllCelebrities() dto.ResponseDTO[[]dto.CelebrityDTO] {
+func (serviceHelper *ServiceHelper) FindAllCelebrities() []entity.Celebrity {
 	celebrities, err := serviceHelper.CelebrityRepository.FindAll()
 
 	if err != nil {
 		log.Println("Failed to find celebrities:", err)
-		return dto.ResponseDTO[[]dto.CelebrityDTO]{Message: "Failed to fetch celebrities", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	var celebrityDTOs []dto.CelebrityDTO
-
-	for _, celebrity := range celebrities {
-		celebrityDTOs = append(celebrityDTOs, mapper.CelebrityToCelebrityDTO(&celebrity))
-	}
-
-	return dto.ResponseDTO[[]dto.CelebrityDTO]{Message: "Celebrities fetched successfully", StatusCode: http.StatusOK, Data: &celebrityDTOs}
+	return celebrities
 }
 
-func (serviceHelper *ServiceHelper) FindMovieByID(id uuid.UUID) dto.ResponseDTO[dto.MovieDTO] {
+func (serviceHelper *ServiceHelper) FindMovieByID(id uuid.UUID) *entity.Movie {
 	movie, err := serviceHelper.MovieRepository.FindByIdEager(id, []string{"Trailers", "Companies", "Celebs", "Photos", "Likes"})
 
 	if err != nil {
 		log.Println("Failed to find movie:", err)
-		return dto.ResponseDTO[dto.MovieDTO]{Message: "Failed to fetch movie", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	movieDTO := mapper.MovieToMovieDTO(&movie)
-
-	return dto.ResponseDTO[dto.MovieDTO]{Message: "Movie fetched successfully", StatusCode: http.StatusOK, Data: &movieDTO}
+	return &movie
 }
 
-func (serviceHelper *ServiceHelper) FindTvShowByID(id uuid.UUID) dto.ResponseDTO[dto.TvShowDTO] {
+func (serviceHelper *ServiceHelper) FindTvShowByID(id uuid.UUID) *entity.TVShow {
 	tvShow, err := serviceHelper.TvShowRepository.FindByID(id)
 
 	if err != nil {
 		log.Println("Failed to find tv show:", err)
-		return dto.ResponseDTO[dto.TvShowDTO]{Message: "Failed to fetch tv show", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	tvShowDTO := mapper.TvShowToTvShowDTO(&tvShow)
-
-	return dto.ResponseDTO[dto.TvShowDTO]{Message: "Tv show fetched successfully", StatusCode: http.StatusOK, Data: &tvShowDTO}
+	return &tvShow
 }
 
-func (serviceHelper *ServiceHelper) FindCelebrityByID(id uuid.UUID) dto.ResponseDTO[dto.CelebrityDTO] {
+func (serviceHelper *ServiceHelper) FindCelebrityByID(id uuid.UUID) *entity.Celebrity {
 	celebrity, err := serviceHelper.CelebrityRepository.FindByID(id)
 
 	if err != nil {
 		log.Println("Failed to find celebrity:", err)
-		return dto.ResponseDTO[dto.CelebrityDTO]{Message: "Failed to fetch celebrity", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	celebrityDTO := mapper.CelebrityToCelebrityDTO(&celebrity)
-
-	return dto.ResponseDTO[dto.CelebrityDTO]{Message: "Celebrity fetched successfully", StatusCode: http.StatusOK, Data: &celebrityDTO}
+	return &celebrity
 }
 
-func (serviceHelper *ServiceHelper) Search(keyword string) dto.ResponseDTO[dto.SearchDTO] {
+func (serviceHelper *ServiceHelper) Search(keyword string) dto.SearchDTO {
 	movies, err := serviceHelper.searchMovieByKeyword(keyword)
 	util.CheckError(err, "Failed to search movie by keyword:")
 
@@ -144,12 +115,10 @@ func (serviceHelper *ServiceHelper) Search(keyword string) dto.ResponseDTO[dto.S
 	celebs, err := serviceHelper.searchCelebrityByKeyword(keyword)
 	util.CheckError(err, "Failed to search celebrity by keyword:")
 
-	searchDTO := dto.SearchDTO{Movies: movies, TvShows: tvShows, Celebs: celebs}
-
-	return dto.ResponseDTO[dto.SearchDTO]{Message: "Search results fetched successfully", StatusCode: http.StatusOK, Data: &searchDTO}
+	return dto.SearchDTO{Movies: movies, TvShows: tvShows, Celebs: celebs}
 }
 
-func (serviceHelper *ServiceHelper) Like(mediaID, userID uuid.UUID, mediaType string) dto.ResponseDTO[bool] {
+func (serviceHelper *ServiceHelper) Like(mediaID, userID uuid.UUID, mediaType string) bool {
 
 	like := entity.Like{MediaID: mediaID, MediaType: mediaType, UserID: userID}
 
@@ -157,14 +126,13 @@ func (serviceHelper *ServiceHelper) Like(mediaID, userID uuid.UUID, mediaType st
 
 	if err != nil {
 		log.Println("Failed to like movie:", err)
-		return dto.ResponseDTO[bool]{Message: "Failed to like movie", StatusCode: http.StatusInternalServerError, Data: nil}
+		return false
 	}
 
-	result := true
-	return dto.ResponseDTO[bool]{Message: "Movie liked successfully", StatusCode: http.StatusOK, Data: &result}
+	return true
 }
 
-func (serviceHelper *ServiceHelper) Unlike(mediaID, userID uuid.UUID, mediaType string) dto.ResponseDTO[bool] {
+func (serviceHelper *ServiceHelper) Unlike(mediaID, userID uuid.UUID, mediaType string) bool {
 
 	like := entity.Like{MediaID: mediaID, MediaType: mediaType, UserID: userID}
 
@@ -172,122 +140,99 @@ func (serviceHelper *ServiceHelper) Unlike(mediaID, userID uuid.UUID, mediaType 
 
 	if err != nil {
 		log.Println("Failed to unlike movie:", err)
-		return dto.ResponseDTO[bool]{Message: "Failed to unlike movie", StatusCode: http.StatusInternalServerError, Data: nil}
+		return false
 	}
-
-	result := false
-	return dto.ResponseDTO[bool]{Message: "Movie unliked successfully", StatusCode: http.StatusOK, Data: &result}
+	return true
 }
 
-func (serviceHelper *ServiceHelper) AddWatchList(userID, mediaID uuid.UUID, mediaType string) dto.ResponseDTO[bool] {
+func (serviceHelper *ServiceHelper) AddWatchList(userID, mediaID uuid.UUID, mediaType string) bool {
 
 	watchList, err := serviceHelper.UserRepository.FindByIdEager(userID, []string{"WatchList"})
 	if err != nil {
 		log.Println("Failed to find user watch list:", err)
-		return dto.ResponseDTO[bool]{Message: "Failed to find user watch list", StatusCode: http.StatusInternalServerError, Data: nil}
+		return false
 	}
 
 	item, err := serviceHelper.createWatchListItem(watchList.WatchList.ID, mediaID, mediaType)
 	if err != nil {
 		log.Println("Failed to create watch list item:", err)
-		return dto.ResponseDTO[bool]{Message: "Failed to create watch list item", StatusCode: http.StatusInternalServerError, Data: nil}
+		return false
 	}
 
 	_, err = serviceHelper.WatchListItemRepository.Create(&item)
 	if err != nil {
 		log.Println("Failed to add item to watch list:", err)
-		return dto.ResponseDTO[bool]{Message: "Failed to add item to watch list", StatusCode: http.StatusInternalServerError, Data: nil}
+		return false
 	}
 
-	result := true
-	return dto.ResponseDTO[bool]{Message: "Item added to watch list successfully", StatusCode: http.StatusOK, Data: &result}
+	return true
+
 }
 
-func (serviceHelper *ServiceHelper) RemoveWatchList(userID, mediaID uuid.UUID, mediaType string) dto.ResponseDTO[bool] {
+func (serviceHelper *ServiceHelper) RemoveWatchList(userID, mediaID uuid.UUID, mediaType string) bool {
 
 	watchList, err := serviceHelper.UserRepository.FindByIdEager(userID, []string{"WatchList"})
 	if err != nil {
 		log.Println("Failed to find user watch list:", err)
-		return dto.ResponseDTO[bool]{Message: "Failed to find user watch list", StatusCode: http.StatusInternalServerError, Data: nil}
+		return false
 	}
 
 	item, err := serviceHelper.findWatchListItem(watchList.WatchList.ID, mediaID, mediaType)
 	if err != nil {
 		log.Println("Failed to find watch list item:", err)
-		return dto.ResponseDTO[bool]{Message: "Failed to find watch list item", StatusCode: http.StatusInternalServerError, Data: nil}
+		return false
 	}
 
 	_, err = serviceHelper.WatchListItemRepository.DeleteById(item.ID)
 	if err != nil {
 		log.Println("Failed to remove item from watch list:", err)
-		return dto.ResponseDTO[bool]{Message: "Failed to remove item from watch list", StatusCode: http.StatusInternalServerError, Data: nil}
+		return false
 	}
 
-	result := true
-	return dto.ResponseDTO[bool]{Message: "Item removed from watch list successfully", StatusCode: http.StatusOK, Data: &result}
+	return true
 }
 
-func (serviceHelper *ServiceHelper) CreateUser(user *dto.UserCreateDTO) dto.ResponseDTO[dto.UserDTO] {
-
-	userEntity := mapper.UserCreateDTOToUser(user)
-	hashedPassword, err := util.HashPassword(user.Password)
-
-	if err != nil {
-		log.Printf("Failed to hash password: %v", err)
-		return dto.ResponseDTO[dto.UserDTO]{Message: "Failed to hash password", StatusCode: http.StatusInternalServerError, Data: nil}
-	}
-
-	userEntity.Password = hashedPassword
-	result, err := serviceHelper.UserRepository.Create(&userEntity)
+func (serviceHelper *ServiceHelper) CreateUser(user entity.User) *entity.User {
+	result, err := serviceHelper.UserRepository.Create(&user)
 
 	if err != nil {
 		log.Printf("Failed to create user: %v", err)
-		return dto.ResponseDTO[dto.UserDTO]{Message: "Failed to create user", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	userDTO := mapper.UserToUserDTO(result)
-
-	return dto.ResponseDTO[dto.UserDTO]{Message: "User created successfully", StatusCode: http.StatusCreated, Data: &userDTO}
+	return result
 }
 
-func (serviceHelper *ServiceHelper) FindUserByID(userID string) dto.ResponseDTO[dto.UserDTO] {
+func (serviceHelper *ServiceHelper) FindUserByID(userID string) *entity.User {
 	id, err := uuid.Parse(userID)
 
 	if err != nil {
 		log.Printf("Failed to parse UUID: %v", err)
-		return dto.ResponseDTO[dto.UserDTO]{Message: "Failed to parse UUID", StatusCode: http.StatusBadRequest, Data: nil}
+		return nil
 	}
 
 	user, err := serviceHelper.UserRepository.FindByID(id)
 	if err != nil {
 		log.Printf("Failed to find user: %v", err)
-		return dto.ResponseDTO[dto.UserDTO]{Message: "Failed to find user", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	userDTO := mapper.UserToUserDTO(&user)
-
-	return dto.ResponseDTO[dto.UserDTO]{Message: "User fetched successfully", StatusCode: http.StatusOK, Data: &userDTO}
+	return &user
 }
 
-func (serviceHelper *ServiceHelper) FindAllUsers() dto.ResponseDTO[[]dto.UserDTO] {
+func (serviceHelper *ServiceHelper) FindAllUsers() []entity.User {
 
 	users, err := serviceHelper.UserRepository.FindAll()
 
 	if err != nil {
 		log.Println("Failed to find users:", err)
-		return dto.ResponseDTO[[]dto.UserDTO]{Message: "Failed to fetch users", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	var userDTOs []dto.UserDTO
-
-	for _, user := range users {
-		userDTOs = append(userDTOs, mapper.UserToUserDTO(&user))
-	}
-
-	return dto.ResponseDTO[[]dto.UserDTO]{Message: "Users fetched successfully", StatusCode: http.StatusOK, Data: &userDTOs}
+	return users
 }
 
-func (serviceHelper *ServiceHelper) FindUserByUsername(username string) dto.ResponseDTO[dto.UserDTO] {
+func (serviceHelper *ServiceHelper) FindUserByUsername(username string) *entity.User {
 
 	user, err := serviceHelper.UserRepository.FindOneByFilter(func(db *gorm.DB) *gorm.DB {
 		return db.Where("username = ?", username)
@@ -295,27 +240,22 @@ func (serviceHelper *ServiceHelper) FindUserByUsername(username string) dto.Resp
 
 	if err != nil {
 		log.Println("Failed to find user:", err)
-		return dto.ResponseDTO[dto.UserDTO]{Message: "Failed to fetch user", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	userDTO := mapper.UserToUserDTO(user)
-
-	return dto.ResponseDTO[dto.UserDTO]{Message: "User fetched successfully", StatusCode: http.StatusOK, Data: &userDTO}
-
+	return user
 }
 
-func (serviceHelper *ServiceHelper) FindUserByEmail(email string) dto.ResponseDTO[dto.UserDTO] {
+func (serviceHelper *ServiceHelper) FindUserByEmail(email string) *entity.User {
 
 	user, err := serviceHelper.UserRepository.FindOneByFilter(findByEmailCallback(email))
 
 	if err != nil {
 		log.Println("Failed to find user:", err)
-		return dto.ResponseDTO[dto.UserDTO]{Message: "Failed to fetch user", StatusCode: http.StatusInternalServerError, Data: nil}
+		return nil
 	}
 
-	userDTO := mapper.UserToUserDTO(user)
-
-	return dto.ResponseDTO[dto.UserDTO]{Message: "User fetched successfully", StatusCode: http.StatusOK, Data: &userDTO}
+	return user
 }
 
 //...

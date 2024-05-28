@@ -8,11 +8,13 @@ import (
 
 type User struct {
 	ID        uuid.UUID `json:"id" gorm:"primaryKey;type:char(36);"`
+	GoogleID  string    `json:"google_id"`
 	Username  string    `json:"username" gorm:"unique;not null;varchar(45)"`
 	Password  string    `json:"password" gorm:"not null;"`
 	FirstName string    `json:"first_name" gorm:"not null;varchar(45)"`
 	LastName  string    `json:"last_name" gorm:"not null;varchar(45)"`
 	Email     string    `json:"email" gorm:"not null;varchar(80)"`
+	Locale    string    `json:"locale"`
 	WatchList WatchList `gorm:"foreignKey:UserID"`
 	Likes     []Like    `gorm:"foreignKey:UserID"`
 	Photos    []Photo   `json:"photos" gorm:"polymorphic:Media;polymorphicValue:users"`

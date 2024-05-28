@@ -32,6 +32,5 @@ func TvShowToTvShowDTO(tvShow *entity.TVShow) dto.TvShowDTO {
 		Trailers:     tvShow.Trailers,
 		Companies:    tvShow.Companies,
 		Celebs:       tvShow.Celebs,
-		//Ratings:      tvShow.Ratings,
 	}
 }

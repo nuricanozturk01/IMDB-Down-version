@@ -5,6 +5,8 @@ import (
 	"imdb_project/data/dal"
 	"imdb_project/data/dto"
 	"imdb_project/data/entity/enum"
+	"imdb_project/data/mapper"
+	"net/http"
 )
 
 type ITvShowService interface {
@@ -26,31 +28,54 @@ func NewTvShowService(serviceHelper *dal.ImdbHelper) *TvShowService {
 }
 
 func (service *TvShowService) CreateTvShow(tvShow *dto.TvShowCreateDTO) dto.ResponseDTO[dto.TvShowDTO] {
-	return service.ServiceHelper.CreateTvShow(tvShow)
+	tvShowEntity := service.ServiceHelper.CreateTvShow(tvShow)
+
+	tvShowDTO := mapper.TvShowToTvShowDTO(tvShowEntity)
+
+	return dto.ResponseDTO[dto.TvShowDTO]{Message: "Tv show created successfully", StatusCode: http.StatusCreated, Data: &tvShowDTO}
 }
 
 func (service *TvShowService) LikeTvShow(tvShowID, userID uuid.UUID) dto.ResponseDTO[bool] {
-	return service.ServiceHelper.Like(tvShowID, userID, enum.TvShowType)
+	result := service.ServiceHelper.Like(tvShowID, userID, enum.TvShowType)
+	return dto.ResponseDTO[bool]{Message: "Movie liked successfully", StatusCode: http.StatusOK, Data: &result}
 }
 
 func (service *TvShowService) DislikeTvShow(tvShowID, userID uuid.UUID) dto.ResponseDTO[bool] {
-	return service.ServiceHelper.Unlike(tvShowID, userID, enum.TvShowType)
+	result := service.ServiceHelper.Unlike(tvShowID, userID, enum.TvShowType)
+	return dto.ResponseDTO[bool]{Message: "Movie unliked successfully", StatusCode: http.StatusOK, Data: &result}
 }
 
 func (service *TvShowService) FindAllTvShow() dto.ResponseDTO[[]dto.TvShowDTO] {
-	return service.ServiceHelper.FindAllTvShows()
+	tvShows := service.ServiceHelper.FindAllTvShows()
+
+	var tvShowDTOs []dto.TvShowDTO
+
+	for _, tvShow := range tvShows {
+		tvShowDTOs = append(tvShowDTOs, mapper.TvShowToTvShowDTO(&tvShow))
+	}
+
+	return dto.ResponseDTO[[]dto.TvShowDTO]{Message: "Tv shows fetched successfully", StatusCode: http.StatusOK, Data: &tvShowDTOs}
 }
 
 func (service *TvShowService) FindTvShowById(tvShowID uuid.UUID) dto.ResponseDTO[dto.TvShowDTO] {
-	return service.ServiceHelper.FindTvShowByID(tvShowID)
+	tvShow := service.ServiceHelper.FindTvShowByID(tvShowID)
+
+	tvShowDTO := mapper.TvShowToTvShowDTO(tvShow)
+
+	return dto.ResponseDTO[dto.TvShowDTO]{Message: "Tv show fetched successfully", StatusCode: http.StatusOK, Data: &tvShowDTO}
 }
 
 func (service *TvShowService) AddTvShowToWatchList(tvShowID, watchListID uuid.UUID) dto.ResponseDTO[bool] {
-	return service.ServiceHelper.AddWatchList(tvShowID, watchListID, enum.TvShowType)
+	result := service.ServiceHelper.AddWatchList(tvShowID, watchListID, enum.TvShowType)
+
+	return dto.ResponseDTO[bool]{Message: "Item added to watch list successfully", StatusCode: http.StatusOK, Data: &result}
 }
 
 func (service *TvShowService) RemoveTvShowFromWatchList(tvShowID, watchListID uuid.UUID) dto.ResponseDTO[bool] {
-	return service.ServiceHelper.RemoveWatchList(tvShowID, watchListID, enum.TvShowType)
+
+	result := service.ServiceHelper.RemoveWatchList(tvShowID, watchListID, enum.TvShowType)
+
+	return dto.ResponseDTO[bool]{Message: "Item removed from watch list successfully", StatusCode: http.StatusOK, Data: &result}
 }
 
 //...

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"gorm.io/gorm"
 	"log"
 )
@@ -81,10 +82,15 @@ func (repository *GenericRepository[T, R]) FindByFilter(predicate func(*gorm.DB)
 func (repository *GenericRepository[T, R]) FindOneByFilter(predicate func(*gorm.DB) *gorm.DB) (*T, error) {
 	var entity T
 	query := predicate(repository.Db)
+
 	if err := query.First(&entity).Error; err != nil {
-		log.Panic("Error while fetching entity: ", err)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		log.Printf("Error while fetching entity: %v", err)
 		return nil, err
 	}
+
 	return &entity, nil
 }
 

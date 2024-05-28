@@ -5,6 +5,9 @@ import (
 	"log"
 )
 
+func init() {
+	Load()
+}
 func Load() {
 	err := godotenv.Load()
 	if err != nil {

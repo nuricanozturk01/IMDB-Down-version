@@ -13,7 +13,7 @@ type UserController struct {
 	Validate    *validator.Validate
 }
 
-func (c *UserController) SubscribeEndpoints(engine *gin.Engine) {
+func (c *UserController) SubscribeEndpoints(engine *gin.RouterGroup) {
 	engine.POST("/api/v1/user", c.CreateUser)
 	engine.GET("/api/v1/user/id", c.FindUserById)
 	engine.GET("/api/v1/user/all", c.FindAllUsers)

@@ -15,7 +15,7 @@ type MovieController struct {
 	Validate     *validator.Validate
 }
 
-func (c *MovieController) SubscribeEndpoints(engine *gin.Engine) {
+func (c *MovieController) SubscribeEndpoints(engine *gin.RouterGroup) {
 	engine.POST("/api/v1/movie/create", c.CreateMovie)
 	engine.POST("/api/v1/movie/like", c.LikeMovie)
 	engine.POST("/api/v1/movie/dislike", c.DislikeMovie)

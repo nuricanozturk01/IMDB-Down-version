@@ -7,16 +7,17 @@ import (
 )
 
 type SearchController struct {
-	SearchService *service.SearchService
-	Validate      *validator.Validate
+	SearchService    *service.SearchService
+	CelebrityService *service.CelebrityService
+	Validate         *validator.Validate
 }
 
-func (c SearchController) SubscribeEndpoints(engine *gin.Engine) {
+func (c SearchController) SubscribeEndpoints(engine *gin.RouterGroup) {
 	engine.GET("/api/v1/search", c.Search)
 }
 
-func NewSearchController(searchService *service.SearchService, validator *validator.Validate) *SearchController {
-	return &SearchController{SearchService: searchService, Validate: validator}
+func NewSearchController(searchService *service.SearchService, celebrityService *service.CelebrityService, validator *validator.Validate) *SearchController {
+	return &SearchController{SearchService: searchService, CelebrityService: celebrityService, Validate: validator}
 }
 
 func (c SearchController) Search(context *gin.Context) {

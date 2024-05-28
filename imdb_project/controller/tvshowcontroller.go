@@ -18,7 +18,7 @@ func NewTVShowController(tvShowService *service.TvShowService, validator *valida
 	return &TVShowController{TvShowService: tvShowService, Validate: validator}
 }
 
-func (c *TVShowController) SubscribeEndpoints(engine *gin.Engine) {
+func (c *TVShowController) SubscribeEndpoints(engine *gin.RouterGroup) {
 	engine.POST("/api/v1/tv_show/create", c.CreateTvShow)
 	engine.POST("/api/v1/tv_show/like", c.LikeTvShow)
 	engine.POST("/api/v1/tv_show/dislike", c.DislikeTvShow)
