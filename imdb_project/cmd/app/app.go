@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/sessions"
@@ -13,6 +14,7 @@ import (
 	"imdb_project/service"
 	"log"
 	"os"
+	"time"
 )
 
 var validate *validator.Validate
@@ -33,9 +35,24 @@ func Run() {
 	}
 
 	// HTTP Layer
-	engine := gin.New()
+	engine := gin.Default()
 
-	// start the session store
+	// CORS configuration
+
+	corsConfig := cors.Config{
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+		AllowOriginFunc: func(origin string) bool {
+			return true
+		},
+	}
+
+	engine.Use(cors.New(corsConfig))
+
+	// Start the session store
 	store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 
 	// Service Helper (Facade Pattern) (for Repository Layer)
@@ -49,7 +66,7 @@ func Run() {
 	authenticationService := service.NewAuthenticationService(imdbHelper)
 	celebrityService := service.NewCelebrityService(imdbHelper)
 
-	// Middleware Layer
+	// Middleware Layer and cors settings
 	authMiddleware := middleware.NewAuthMiddleware(store)
 
 	// Controller Layer
@@ -61,10 +78,11 @@ func Run() {
 
 	// Public routes
 	authController.SubscribeEndpoints(engine)
+	engine.Use(authMiddleware.Middleware())
 
 	// Protected routes
 	protected := engine.Group("/")
-	protected.Use(authMiddleware.Middleware())
+	//protected.Use(authMiddleware.Middleware())
 
 	userController.SubscribeEndpoints(protected)
 	movieController.SubscribeEndpoints(protected)
@@ -77,111 +95,4 @@ func Run() {
 	if err != nil {
 		fmt.Printf("Message:%s\n", err.Error())
 	}
-
-	/*movie, err := imdbHelper.FindAllMovies()
-	if err != nil {
-		log.Fatal("Failed to fetch movies:", err)
-	}
-
-	firstMovie := movie[0]
-
-	celeb, err := imdbHelper.FindAllCelebrities()
-
-	if err != nil {
-		log.Fatal("Failed to fetch celebrities:", err)
-	}
-
-	firstCeleb, err := imdbHelper.FindCelebrityByID(celeb[0].ID)
-
-	if err != nil {
-		log.Fatal("Failed to fetch celebrity:", err)
-
-	}
-
-	fmt.Println(firstMovie.Name)
-	fmt.Println(firstCeleb.ID)
-
-	err = db.Model(&firstMovie).Association("Celebs").Replace(firstCeleb)
-	if err != nil {
-		log.Fatal("Failed to associate movie with celebrity:", err)
-	}*/
-
-	/*imdbHelper := helper.New(db)
-
-	result := imdbHelper.Search("Inc")
-
-	log.Println(result)
-
-	movie := entity.Movie{
-		Name: "Inception",
-		Photos: []entity.Photo{
-			{URL: "photo1.jpg"},
-			{URL: "photo2.jpg"},
-		},
-		Trailers: []entity.Trailer{
-			{URL: "trailer1.mp4"},
-			{URL: "trailer2.mp4"},
-		},
-	}
-
-	tvShow := entity.TVShow{
-		Name: "Breaking Bad",
-		Photos: []entity.Photo{
-			{URL: "photo1.jpg"},
-			{URL: "photo2.jpg"},
-		},
-		Trailers: []entity.Trailer{
-			{URL: "trailer1.mp4"},
-			{URL: "trailer2.mp4"},
-		},
-	}
-
-	user := entity.User{
-		Username: "John Doe",
-		Photos: []entity.Photo{
-			{URL: "user_photo1.jpg"},
-			{URL: "user_photo2.jpg"},
-		},
-	}
-
-	celebrity := entity.Celebrity{
-		Name: "Jane Smith",
-		Photos: []entity.Photo{
-			{URL: "celeb_photo1.jpg"},
-			{URL: "celeb_photo2.jpg"},
-		},
-	}
-
-	db.Create(&movie)
-	db.Create(&tvShow)
-	db.Create(&user)
-	db.Create(&celebrity)
-
-	watchListItem1 := entity.WatchListItem{
-		WatchListID: user.WatchList.ID,
-		MediaID:     movie.ID,
-		MediaType:   "movies",
-	}
-	watchListItem2 := entity.WatchListItem{
-		WatchListID: user.WatchList.ID,
-		MediaID:     tvShow.ID,
-		MediaType:   "tv_shows",
-	}
-
-	db.Create(&watchListItem1)
-	db.Create(&watchListItem2)
-
-	like1 := entity.Like{
-		UserID:    user.ID,
-		MediaID:   movie.ID,
-		MediaType: "movies",
-	}
-	db.Create(&like1)
-
-	like2 := entity.Like{
-		UserID:    user.ID,
-		MediaID:   tvShow.ID,
-		MediaType: "tv_shows",
-	}
-	db.Create(&like2)*/
 }

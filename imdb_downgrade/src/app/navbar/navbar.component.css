@@ -1,0 +1,38 @@
+.logo {
+  width: 50px;
+}
+.results-container {
+  position: absolute;
+  top: 70px;
+  left: 55%;
+  right: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  width: 40%;
+  border: 1px solid #ddd;
+  z-index: 1000;
+}
+
+.img-thumbnail {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.list-group-item {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-nav.ms-auto {
+  margin-left: auto;
+}
+
+form.d-flex.mx-auto {
+  flex: 1;
+  max-width: 600px;
+}
+
+.input-group {
+  width: 100%;
+}

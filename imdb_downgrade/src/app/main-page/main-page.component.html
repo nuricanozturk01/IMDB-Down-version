@@ -1,0 +1,31 @@
+<body>
+<app-navbar></app-navbar>
+<div id="imdbCarousel" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div *ngFor="let chunk of movieChunks; let i = index" class="carousel-item" [class.active]="i === 0">
+      <div class="row">
+        <div class="col-md-4" *ngFor="let movie of chunk">
+          <div class="card" (click)="clickItem()">
+            <img [src]="movie.img" class="card-img-top" [alt]="movie.title">
+            <div class="card-body">
+              <h5 class="card-title">{{ movie.title }}</h5>
+              <p class="card-text">Rating: {{ movie.rating }}</p>
+              <a href="#" class="btn btn-primary">Watchlist</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#imdbCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#imdbCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+
+</body>

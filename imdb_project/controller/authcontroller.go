@@ -120,10 +120,8 @@ func (controller *AuthController) GoogleCallback(ctx *gin.Context) {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session: " + err.Error()})
 			return
 		}
-		fmt.Println("Session: ", session.ID)
-		fmt.Println("Session: ", session.Values["user"])
 
-		ctx.JSON(http.StatusOK, gin.H{"message": "Logged in successfully", "sessionID": session.ID})
+		ctx.Redirect(http.StatusTemporaryRedirect, "http://localhost:4200")
 	} else {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to log in with OAuth2"})
 	}
@@ -131,8 +129,8 @@ func (controller *AuthController) GoogleCallback(ctx *gin.Context) {
 
 func (controller *AuthController) Login(ctx *gin.Context) {
 	var login *dto.LoginDTO
-
 	err := ctx.BindJSON(&login)
+	fmt.Println(login.Email)
 
 	if validationErr := controller.Validate.Struct(login); validationErr != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})

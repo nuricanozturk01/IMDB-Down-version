@@ -1,0 +1,13 @@
+.carousel-item {
+  text-align: center;
+}
+
+.card {
+  margin: auto;
+  margin-top: 30px;
+  max-width: 250px;
+}
+
+.row {
+  justify-content: center;
+}

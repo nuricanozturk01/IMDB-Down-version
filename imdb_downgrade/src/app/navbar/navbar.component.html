@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/2560px-IMDB_Logo_2016.svg.png" alt="IMDB Logo" class="logo">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#">IMDbPro</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Watchlist</a>
+        </li>
+      </ul>
+      <form class="d-flex mx-auto">
+        <div class="input-group">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">All</button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">All</a></li>
+            <li><a class="dropdown-item" href="#">Titles</a></li>
+            <li><a class="dropdown-item" href="#">TV Episodes</a></li>
+            <li><a class="dropdown-item" href="#">Celebs</a></li>
+            <li><a class="dropdown-item" href="#">Companies</a></li>
+            <li><a class="dropdown-item" href="#">Keywords</a></li>
+            <li><a class="dropdown-item" href="#">Advanced Search</a></li>
+          </ul>
+          <input type="text" class="form-control" placeholder="Search IMDb" aria-label="Search" (input)="onSearch($event.target.value)">
+        </div>
+      </form>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" (click)="handleSignInClick()">Sign In</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div *ngIf="filteredResults.length > 0" class="results-container">
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let result of filteredResults">
+        <img [src]="result.image" alt="{{ result.title }}" class="img-thumbnail mr-2" style="width: 50px; height: 50px;">
+        {{ result.title }}
+      </li>
+    </ul>
+  </div>
+</nav>
