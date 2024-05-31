@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {Router} from "@angular/router";
 import {SearchService} from "../services/search.service";
+import {SearchDTO} from "../../dto/dtos";
 
 @Component({
   selector: 'app-navbar',
@@ -27,11 +28,11 @@ export class NavbarComponent {
 
   onSearch(query: string) {
     if (query.length >= 3) {
-    /*  this.filteredResults = this.results.filter(result =>
+     /* this.filteredResults = this.results.filter(result =>
         result.title.toLowerCase().includes(query.toLowerCase())
-      );*/
-
-      this.service.search(query).subscribe((response: any) => {
+      );
+*/
+      this.service.search(query).subscribe((response: SearchDTO) => {
         console.log(response);
       });
 

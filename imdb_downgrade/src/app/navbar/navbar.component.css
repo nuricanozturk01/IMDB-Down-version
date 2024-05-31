@@ -1,16 +1,19 @@
 .logo {
   width: 50px;
 }
+
 .results-container {
   position: absolute;
-  top: 70px;
+  top: 60px;
   left: 55%;
   right: 50%;
+  max-height: 600px;
   transform: translateX(-50%);
   background-color: white;
   width: 40%;
   border: 1px solid #ddd;
   z-index: 1000;
+  overflow-y: auto;
 }
 
 .img-thumbnail {
@@ -35,4 +38,11 @@ form.d-flex.mx-auto {
 
 .input-group {
   width: 100%;
+}
+
+.ul-title {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px;
+  background-color: #f8f9fa;
 }

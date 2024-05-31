@@ -8,6 +8,7 @@ import (
 type TvShowCreateDTO struct {
 	Name         string             `json:"name" validate:"required"`
 	Year         int                `json:"year" validate:"required"`
+	Description  string             `json:"description" validate:"required"`
 	EpisodeCount uint32             `json:"episode_count" validate:"required"`
 	SeasonCount  uint32             `json:"season_count" validate:"required"`
 	Photos       []entity.Photo     `json:"photos" validate:"required"`
@@ -20,6 +21,7 @@ type TvShowDTO struct {
 	ID           uuid.UUID          `json:"id"`
 	Name         string             `json:"name"`
 	Year         int                `json:"year"`
+	Description  string             `json:"description" validate:"required"`
 	Popularity   int                `json:"popularity"`
 	AverageRate  float64            `json:"average_rate"`
 	ClickCount   uint32             `json:"click_count"`
@@ -29,4 +31,5 @@ type TvShowDTO struct {
 	Trailers     []entity.Trailer   `json:"trailers"`
 	Companies    []entity.Company   `json:"companies"`
 	Celebs       []entity.Celebrity `json:"celebs"`
+	Likes        []entity.Like      `json:"likes"`
 }

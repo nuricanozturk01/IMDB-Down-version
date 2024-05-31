@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/sessions"
@@ -14,7 +13,6 @@ import (
 	"imdb_project/service"
 	"log"
 	"os"
-	"time"
 )
 
 var validate *validator.Validate
@@ -38,19 +36,7 @@ func Run() {
 	engine := gin.Default()
 
 	// CORS configuration
-
-	corsConfig := cors.Config{
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-		AllowOriginFunc: func(origin string) bool {
-			return true
-		},
-	}
-
-	engine.Use(cors.New(corsConfig))
+	engine.Use(middleware.CorsPolicy())
 
 	// Start the session store
 	store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))

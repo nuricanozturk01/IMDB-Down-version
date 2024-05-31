@@ -8,8 +8,6 @@ import (
 
 type User struct {
 	ID        uuid.UUID `json:"id" gorm:"primaryKey;type:char(36);"`
-	GoogleID  string    `json:"google_id"`
-	Username  string    `json:"username" gorm:"unique;not null;varchar(45)"`
 	Password  string    `json:"password" gorm:"not null;"`
 	FirstName string    `json:"first_name" gorm:"not null;varchar(45)"`
 	LastName  string    `json:"last_name" gorm:"not null;varchar(45)"`
@@ -34,5 +32,5 @@ func (usr *User) GetID() uuid.UUID {
 }
 
 func (usr *User) GetName() string {
-	return usr.Username
+	return usr.Email
 }

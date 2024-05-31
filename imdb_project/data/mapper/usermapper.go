@@ -8,7 +8,6 @@ import (
 func UserToUserDTO(user *entity.User) dto.UserDTO {
 	return dto.UserDTO{
 		ID:        user.ID,
-		Username:  user.Username,
 		Email:     user.Email,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
@@ -19,7 +18,6 @@ func UserCreateDTOToUser(userCreateDTO *dto.UserCreateDTO) entity.User {
 	return entity.User{
 		FirstName: userCreateDTO.FirstName,
 		LastName:  userCreateDTO.LastName,
-		Username:  userCreateDTO.Username,
 		Email:     userCreateDTO.Email,
 		Password:  userCreateDTO.Password,
 	}
@@ -39,7 +37,6 @@ func UserToUserFullDTO(user *entity.User) dto.UserFullDTO {
 
 	return dto.UserFullDTO{
 		ID:        user.ID,
-		Username:  user.Username,
 		Email:     user.Email,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
@@ -55,7 +52,6 @@ func GoogleUserToUserCreateDTO(user *dto.GoogleUserDTO) *dto.UserCreateDTO {
 		Email:     user.Email,
 		Picture:   user.Picture,
 		Locale:    user.Locale,
-		GoogleID:  user.ID,
 		Password:  "from-google",
 	}
 }

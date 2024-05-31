@@ -2,7 +2,6 @@ package dal
 
 import (
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 	"imdb_project/data/dto"
 	"imdb_project/data/entity"
 	"imdb_project/data/mapper"
@@ -115,7 +114,7 @@ func (serviceHelper *ServiceHelper) Search(keyword string) dto.SearchDTO {
 	celebs, err := serviceHelper.searchCelebrityByKeyword(keyword)
 	util.CheckError(err, "Failed to search celebrity by keyword:")
 
-	return dto.SearchDTO{Movies: movies, TvShows: tvShows, Celebs: celebs}
+	return dto.SearchDTO{Keyword: keyword, Movies: movies, TvShows: tvShows, Celebs: celebs}
 }
 
 func (serviceHelper *ServiceHelper) Like(mediaID, userID uuid.UUID, mediaType string) bool {
@@ -230,20 +229,6 @@ func (serviceHelper *ServiceHelper) FindAllUsers() []entity.User {
 	}
 
 	return users
-}
-
-func (serviceHelper *ServiceHelper) FindUserByUsername(username string) *entity.User {
-
-	user, err := serviceHelper.UserRepository.FindOneByFilter(func(db *gorm.DB) *gorm.DB {
-		return db.Where("username = ?", username)
-	})
-
-	if err != nil {
-		log.Println("Failed to find user:", err)
-		return nil
-	}
-
-	return user
 }
 
 func (serviceHelper *ServiceHelper) FindUserByEmail(email string) *entity.User {

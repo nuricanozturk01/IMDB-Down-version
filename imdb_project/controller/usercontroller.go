@@ -17,7 +17,6 @@ func (c *UserController) SubscribeEndpoints(engine *gin.RouterGroup) {
 	engine.POST("/api/v1/user", c.CreateUser)
 	engine.GET("/api/v1/user/id", c.FindUserById)
 	engine.GET("/api/v1/user/all", c.FindAllUsers)
-	engine.GET("/api/v1/user/username", c.FindUserByUsername)
 	engine.GET("/api/v1/user/email", c.FindUserByEmail)
 }
 
@@ -53,12 +52,6 @@ func (c *UserController) FindUserById(ctx *gin.Context) {
 
 func (c *UserController) FindAllUsers(ctx *gin.Context) {
 	response := c.UserService.FindAllUsers()
-	ctx.JSON(int(response.StatusCode), response)
-}
-
-func (c *UserController) FindUserByUsername(ctx *gin.Context) {
-	username := ctx.Query("username")
-	response := c.UserService.FindUserByUsername(username)
 	ctx.JSON(int(response.StatusCode), response)
 }
 

@@ -8,6 +8,7 @@ import (
 func MovieCreateDtoToMovie(movieCreateDTO *dto.MovieCreateDTO) entity.Movie {
 	return entity.Movie{
 		Name:        movieCreateDTO.Name,
+		Description: movieCreateDTO.Description,
 		AverageRate: 0,
 		Year:        movieCreateDTO.Year,
 		Popularity:  0,
@@ -24,6 +25,7 @@ func MovieToMovieDTO(movie *entity.Movie) dto.MovieDTO {
 	return dto.MovieDTO{
 		ID:          movie.ID,
 		Name:        movie.Name,
+		Description: movie.Description,
 		AverageRate: movie.AverageRate,
 		Year:        movie.Year,
 		Popularity:  movie.Popularity,

@@ -9,6 +9,7 @@ import (
 type Movie struct {
 	ID          uuid.UUID   `json:"id" gorm:"type:char(36);primaryKey;"`
 	Name        string      `json:"name" gorm:"type:varchar(80);"`
+	Description string      `json:"description" gorm:"type:text;"`
 	AverageRate float64     `json:"average_rate" gorm:"type:float;default:0;"`
 	Year        uint        `json:"year" gorm:"type:int;"`
 	Popularity  uint        `json:"popularity" gorm:"type:int;default:0;"`

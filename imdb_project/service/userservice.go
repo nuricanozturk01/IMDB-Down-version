@@ -14,7 +14,6 @@ type IUserService interface {
 	CreateUser(user *dto.UserCreateDTO) dto.ResponseDTO[dto.UserDTO]
 	FindUserById(userID string) dto.ResponseDTO[dto.UserDTO]
 	FindAllUsers() dto.ResponseDTO[[]dto.UserDTO]
-	FindUserByUsername(username string) dto.ResponseDTO[dto.UserDTO]
 	FindUserByEmail(email string) dto.ResponseDTO[dto.UserDTO]
 }
 
@@ -71,14 +70,6 @@ func (service *UserService) FindAllUsers() dto.ResponseDTO[[]dto.UserDTO] {
 	}
 
 	return dto.ResponseDTO[[]dto.UserDTO]{Message: "Users fetched successfully", StatusCode: http.StatusOK, Data: &userDTOs}
-}
-
-func (service *UserService) FindUserByUsername(username string) dto.ResponseDTO[dto.UserDTO] {
-	user := service.ServiceHelper.FindUserByUsername(username)
-
-	userDTO := mapper.UserToUserDTO(user)
-
-	return dto.ResponseDTO[dto.UserDTO]{Message: "User fetched successfully", StatusCode: http.StatusOK, Data: &userDTO}
 }
 
 func (service *UserService) FindUserByEmail(email string) dto.ResponseDTO[dto.UserDTO] {

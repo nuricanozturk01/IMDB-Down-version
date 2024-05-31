@@ -8,6 +8,7 @@ import (
 type MovieDTO struct {
 	ID          uuid.UUID          `json:"id"`
 	Name        string             `json:"name"`
+	Description string             `json:"description"`
 	AverageRate float64            `json:"average_rate"`
 	Year        uint               `json:"year"`
 	Popularity  uint               `json:"popularity"`
@@ -20,11 +21,12 @@ type MovieDTO struct {
 }
 
 type MovieCreateDTO struct {
-	Name      string             `json:"name" validate:"required"`
-	Year      uint               `json:"year" validate:"required"`
-	Trailers  []entity.Trailer   `json:"trailers" validate:"required"`
-	Companies []entity.Company   `json:"companies" validate:"required"`
-	Celebs    []entity.Celebrity `json:"celebs" validate:"required"`
-	Likes     []entity.Like      `json:"likes"`
-	Photos    []entity.Photo     `json:"photos" validate:"required"`
+	Name        string             `json:"name" validate:"required"`
+	Year        uint               `json:"year" validate:"required"`
+	Description string             `json:"description" validate:"required"`
+	Trailers    []entity.Trailer   `json:"trailers" validate:"required"`
+	Companies   []entity.Company   `json:"companies" validate:"required"`
+	Celebs      []entity.Celebrity `json:"celebs" validate:"required"`
+	Likes       []entity.Like      `json:"likes"`
+	Photos      []entity.Photo     `json:"photos" validate:"required"`
 }

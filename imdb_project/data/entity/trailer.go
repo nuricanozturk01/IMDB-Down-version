@@ -6,10 +6,10 @@ import (
 )
 
 type Trailer struct {
-	ID        uuid.UUID `gorm:"type:char(36);primary_key"`
-	MediaID   uuid.UUID
-	MediaType string
-	URL       string `json:"url"`
+	ID        uuid.UUID `gorm:"type:char(36);primary_key" json:"id"`
+	MediaID   uuid.UUID `json:"media_id"`
+	MediaType string    `json:"media_type"`
+	URL       string    `json:"url"`
 }
 
 func (trailer *Trailer) BeforeCreate(tx *gorm.DB) (err error) {
