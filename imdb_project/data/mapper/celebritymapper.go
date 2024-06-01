@@ -7,7 +7,10 @@ import (
 
 func CelebrityToCelebrityDTO(celebrity *entity.Celebrity) dto.CelebrityDTO {
 	return dto.CelebrityDTO{
-		ID:   celebrity.ID,
-		Name: celebrity.Name,
+		ID:      celebrity.ID,
+		Name:    celebrity.Name,
+		TVShows: celebrity.TVShows,
+		Movies:  celebrity.Movies,
+		Photos:  celebrity.Photos,
 	}
 }

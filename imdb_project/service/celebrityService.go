@@ -30,6 +30,7 @@ func (service *CelebrityService) FindCelebrityByID(id uuid.UUID) dto.ResponseDTO
 }
 
 func (service *CelebrityService) FindAllCelebrities() dto.ResponseDTO[[]dto.CelebrityDTO] {
+
 	celebs := service.ServiceHelper.FindAllCelebrities()
 
 	var celebrityDTOs []dto.CelebrityDTO

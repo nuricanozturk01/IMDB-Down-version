@@ -15,7 +15,7 @@
           <a class="nav-link" href="#">IMDbPro</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Watchlist</a>
+          <a class="nav-link" href="/watch-list">Watchlist</a>
         </li>
       </ul>
       <form class="d-flex mx-auto">
@@ -45,41 +45,39 @@
   </div>
 
 
-  <div *ngIf="filteredResults.length > 0" class="results-container">
-
-
-    <ul class="list-group">
+  <div *ngIf="movies.length > 0 || tvShows.length > 0 || celebs.length > 0" class="results-container">
+    <ul class="list-group" *ngIf="movies.length> 0">
       <div class="d-flex justify-content-center align-items-center ul-title">
         Movies
       </div>
-      <li class="list-group-item" *ngFor="let result of filteredResults">
-        <img [src]="result.image" alt="{{ result.title }}" class="img-thumbnail mr-2"
+      <li class="list-group-item" *ngFor="let result of movies">
+        <img [src]="result.photos[0].url" alt="{{ result.name }}" class="img-thumbnail mr-2"
              style="width: 50px; height: 50px;">
-        {{ result.title }}
+        {{ result.name }}
       </li>
     </ul>
 
-    <ul class="list-group">
+    <ul class="list-group" *ngIf="tvShows.length> 0">
       <div class="d-flex justify-content-center align-items-center ul-title">
         Tv Shows
       </div>
-      <li class="list-group-item" *ngFor="let result of filteredResults">
-        <img [src]="result.image" alt="{{ result.title }}" class="img-thumbnail mr-2"
+      <li class="list-group-item" *ngFor="let result of tvShows">
+        <img [src]="result.photos[0].url" alt="{{ result.name }}" class="img-thumbnail mr-2"
              style="width: 50px; height: 50px;">
-        Arka Sokaklar
+        {{ result.name }}
       </li>
     </ul>
 
-    <ul class="list-group">
+    <ul class="list-group" *ngIf="celebs.length> 0">
 
       <div class="d-flex justify-content-center align-items-center ul-title">
         Celebs
       </div>
 
-      <li class="list-group-item" *ngFor="let result of filteredResults">
-        <img [src]="result.image" alt="{{ result.title }}" class="img-thumbnail mr-2"
+      <li class="list-group-item" *ngFor="let result of celebs">
+        <img [src]="result.photos[0].url" alt="{{ result.name }}" class="img-thumbnail mr-2"
              style="width: 50px; height: 50px;">
-        John Cena
+        {{ result.name }}
       </li>
     </ul>
   </div>

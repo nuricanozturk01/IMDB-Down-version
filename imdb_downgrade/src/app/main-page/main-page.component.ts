@@ -1,69 +1,56 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
-import {AuthenticationService} from "../services/authentication.service";
+import {SearchService} from "../services/search.service";
+import {MovieDTO} from "../../dto/dtos";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {RateComponent} from "../rate/rate.component";
 
 @Component({
   selector: 'app-main-page',
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.css']
 })
-export class MainPageComponent implements OnInit{
-  movies = [
-    {
-      title: '3 Body Problem',
-      rating: 7.7,
-      img: 'https://m.media-amazon.com/images/M/MV5BZDA0MmM4YzUtMzYwZC00OGI2LWE0ODctNzNhNTkwN2FmNTVhXkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_FMjpg_UX1000_.jpg'
-    },
-    {
-      title: 'Shogun',
-      rating: 9.1,
-      img: 'https://m.media-amazon.com/images/M/MV5BZDA0MmM4YzUtMzYwZC00OGI2LWE0ODctNzNhNTkwN2FmNTVhXkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_FMjpg_UX1000_.jpg'
-    },
-    {
-      title: 'Godzilla X Kong: The New Empire',
-      rating: 6.6,
-      img: 'https://m.media-amazon.com/images/M/MV5BZDA0MmM4YzUtMzYwZC00OGI2LWE0ODctNzNhNTkwN2FmNTVhXkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_FMjpg_UX1000_.jpg'
-    },
-    {
-      title: 'The Gentlemen',
-      rating: 8.2,
-      img: 'https://m.media-amazon.com/images/M/MV5BZDA0MmM4YzUtMzYwZC00OGI2LWE0ODctNzNhNTkwN2FmNTVhXkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_FMjpg_UX1000_.jpg'
-    },
-    {
-      title: 'Road House',
-      rating: 6.2,
-      img: 'https://m.media-amazon.com/images/M/MV5BZDA0MmM4YzUtMzYwZC00OGI2LWE0ODctNzNhNTkwN2FmNTVhXkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_FMjpg_UX1000_.jpg'
-    },
-    {
-      title: 'Dune: Part Two',
-      rating: 8.8,
-      img: 'https://m.media-amazon.com/images/M/MV5BZDA0MmM4YzUtMzYwZC00OGI2LWE0ODctNzNhNTkwN2FmNTVhXkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_FMjpg_UX1000_.jpg'
-    }
-  ];
+export class MainPageComponent implements OnInit {
+  movies: MovieDTO[] = [];
+  movieSlides: MovieDTO[][] = [];
 
-  movieChunks = [];
-
-  constructor(private route: Router, private service: AuthenticationService) {
+  constructor(private route: Router, private service: SearchService, private modal: NgbModal) {
   }
 
   ngOnInit(): void {
-    this.movieChunks = this.chunkArray(this.movies, 3);
-  /*  this.service.getSession().subscribe((response: any) => {
-      console.log(response);
-    })*/
+    this.service.findAllMovies().subscribe((response: MovieDTO[]) => {
+      this.movies = response;
+      this.movieSlides = this.chunkArray(this.movies, 4);
+    });
   }
 
-  chunkArray(myArray, chunk_size) {
+  private chunkArray(myArray, chunk_size) {
     let results = [];
 
-    while (myArray.length) {
-      results.push(myArray.splice(0, chunk_size));
-    }
+    for (let i = 0; i < myArray.length; i += chunk_size)
+      results.push(myArray.slice(i, i + chunk_size));
 
     return results;
   }
 
-  clickItem() {
-    this.route.navigate(['/details']);
+  clickItem(movie: MovieDTO) {
+    this.service.findMovieDetails(movie.id).subscribe((response: MovieDTO) => {
+      console.log("DTO: ", response);
+      this.route.navigate(['/details', {movie: JSON.stringify(response)}]);
+    });
+  }
+
+  clickAddOnWatchList(movie: MovieDTO) {
+    this.service.addOnWatchList(movie.id).subscribe((response: string) => {
+      console.log(response);
+    })
+  }
+
+  clickRateMovie(movie: MovieDTO) {
+    const modalRef = this.modal.open(RateComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    });
+    modalRef.componentInstance.showModal = true;
   }
 }

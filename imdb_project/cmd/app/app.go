@@ -58,9 +58,9 @@ func Run() {
 	// Controller Layer
 	authController := controller.NewAuthController(authenticationService, validate, store)
 	userController := controller.NewUserController(userService, validate)
-	movieController := controller.NewMovieController(movieService, validate)
-	tvShowController := controller.NewTVShowController(tvShowService, validate)
-	searchController := controller.NewSearchController(searchService, celebrityService, validate)
+	movieController := controller.NewMovieController(movieService, validate, store)
+	tvShowController := controller.NewTVShowController(tvShowService, validate, store)
+	searchController := controller.NewSearchController(searchService, celebrityService, validate, store)
 
 	// Public routes
 	authController.SubscribeEndpoints(engine)

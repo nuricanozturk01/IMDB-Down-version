@@ -33,22 +33,27 @@ func findByUsernameCallback(username string) func(*gorm.DB) *gorm.DB {
 		return db.Where("username = ?", username)
 	}
 }
-func (serviceHelper *ServiceHelper) findWatchListItem(watchListID, mediaID uuid.UUID, mediaType string) (entity.WatchListItem, error) {
+func (serviceHelper *ServiceHelper) findWatchListItem(watchList *entity.WatchList, mediaID uuid.UUID, mediaType string) (*entity.WatchListItem, error) {
 	switch mediaType {
 	case enum.MovieType:
-		movie, err := serviceHelper.MovieRepository.FindByID(mediaID)
-		if err != nil {
-			return entity.WatchListItem{}, fmt.Errorf("failed to find movie: %w", err)
+		for _, item := range watchList.Items {
+			if item.MediaType == mediaType && item.MediaID == mediaID {
+				return &item, nil
+			}
 		}
-		return serviceHelper.findWatchListItemByMediaID(watchListID, movie.ID)
+
+		return nil, fmt.Errorf("watch list item not found")
+
 	case enum.TvShowType:
-		tvShow, err := serviceHelper.TvShowRepository.FindByID(mediaID)
-		if err != nil {
-			return entity.WatchListItem{}, fmt.Errorf("failed to find tv show: %w", err)
+		for _, item := range watchList.Items {
+			if item.MediaType == mediaType && item.MediaID == mediaID {
+				return &item, nil
+			}
 		}
-		return serviceHelper.findWatchListItemByMediaID(watchListID, tvShow.ID)
+
+		return nil, fmt.Errorf("watch list item not found")
 	default:
-		return entity.WatchListItem{}, fmt.Errorf("invalid media type: %s", mediaType)
+		return nil, fmt.Errorf("invalid media type: %s", mediaType)
 	}
 }
 
@@ -84,7 +89,7 @@ func (serviceHelper *ServiceHelper) findWatchListItemByMediaID(watchListID, medi
 
 func (serviceHelper *ServiceHelper) searchMovieByKeyword(keyword string) ([]dto.MovieDTO, error) {
 
-	filter, err := serviceHelper.MovieRepository.FindByFilter(searchQueryCallback(keyword))
+	filter, err := serviceHelper.MovieRepository.FindByFilterEager(searchQueryCallback(keyword), []string{"Trailers", "Companies", "Celebs", "Photos", "Likes"})
 
 	if err != nil {
 		return nil, err
@@ -100,7 +105,7 @@ func (serviceHelper *ServiceHelper) searchMovieByKeyword(keyword string) ([]dto.
 
 func (serviceHelper *ServiceHelper) searchTvShowByKeyword(keyword string) ([]dto.TvShowDTO, error) {
 
-	filter, err := serviceHelper.TvShowRepository.FindByFilter(searchQueryCallback(keyword))
+	filter, err := serviceHelper.TvShowRepository.FindByFilterEager(searchQueryCallback(keyword), []string{"Trailers", "Companies", "Celebs", "Photos", "Likes"})
 
 	if err != nil {
 		return nil, err
@@ -117,7 +122,7 @@ func (serviceHelper *ServiceHelper) searchTvShowByKeyword(keyword string) ([]dto
 
 func (serviceHelper *ServiceHelper) searchCelebrityByKeyword(keyword string) ([]dto.CelebrityDTO, error) {
 
-	filter, err := serviceHelper.CelebrityRepository.FindByFilter(searchQueryCallback(keyword))
+	filter, err := serviceHelper.CelebrityRepository.FindByFilterEager(searchQueryCallback(keyword), []string{"Movies", "TVShows", "Photos"})
 
 	if err != nil {
 		return nil, err

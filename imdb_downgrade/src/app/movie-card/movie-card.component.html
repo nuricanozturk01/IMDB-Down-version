@@ -1,0 +1,40 @@
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-2" (click)="clickDetails(movie)" style="cursor: pointer">
+      <img src="{{ movie.photos[0].url }}" class="img-fluid rounded-start" alt="..." width="100%">
+    </div>
+    <div class="col-md-10">
+      <div class="card-body position-relative">
+        <button type="button" class="btn btn-danger position-absolute top-0 end-0 m-2"
+                (click)="clickRemoveFromWatchList(movie)">
+          <i class="bi bi-trash"></i>
+        </button>
+        <h5 class="card-title">{{ movie.name }}</h5>
+        <p class="card-text">
+          <span class="badge bg-primary">Movie</span>
+          &nbsp;
+          <span class="text-warning">&#9733; {{ movie.average_rate }} </span>
+        </p>
+        <p class="card-text">
+          {{ movie.description }}
+        </p>
+        <p class="card-text">
+          <strong>Company:</strong>
+          &nbsp;
+          <span class="badge bg-primary" *ngFor="let company of movie.companies">
+            {{ company.name }}
+          </span>
+          &nbsp;
+        </p>
+        <p class="card-text">
+          <strong>Stars:</strong>
+          &nbsp;
+          <span class="badge bg-primary" *ngFor="let company of movie.celebs">
+            {{ company.name }}
+          </span>
+          &nbsp;
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

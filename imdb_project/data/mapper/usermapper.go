@@ -13,6 +13,23 @@ func UserToUserDTO(user *entity.User) dto.UserDTO {
 		LastName:  user.LastName,
 	}
 }
+func UserToUserDTOPtr(user *entity.User) *dto.UserDTO {
+	return &dto.UserDTO{
+		ID:        user.ID,
+		Email:     user.Email,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+	}
+}
+
+func UserDTOToUser(userDTO *dto.UserDTO) *entity.User {
+	return &entity.User{
+		ID:        userDTO.ID,
+		Email:     userDTO.Email,
+		FirstName: userDTO.FirstName,
+		LastName:  userDTO.LastName,
+	}
+}
 
 func UserCreateDTOToUser(userCreateDTO *dto.UserCreateDTO) entity.User {
 	return entity.User{

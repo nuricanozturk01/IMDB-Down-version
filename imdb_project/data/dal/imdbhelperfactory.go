@@ -18,6 +18,7 @@ type ImdbHelper struct {
 	WatchListItemRepository repository.IGenericRepository[entity.WatchListItem, uuid.UUID]
 	LikeRepository          repository.IGenericRepository[entity.Like, uuid.UUID]
 	UserRepository          repository.IGenericRepository[entity.User, uuid.UUID]
+	RateRepository          repository.IGenericRepository[entity.Rate, uuid.UUID]
 }
 
 func New(db *gorm.DB) *ImdbHelper {
@@ -30,5 +31,6 @@ func New(db *gorm.DB) *ImdbHelper {
 		WatchListItemRepository: repository.NewGenericRepository[entity.WatchListItem, uuid.UUID](db),
 		LikeRepository:          repository.NewGenericRepository[entity.Like, uuid.UUID](db),
 		UserRepository:          repository.NewGenericRepository[entity.User, uuid.UUID](db),
+		RateRepository:          repository.NewGenericRepository[entity.Rate, uuid.UUID](db),
 	}
 }

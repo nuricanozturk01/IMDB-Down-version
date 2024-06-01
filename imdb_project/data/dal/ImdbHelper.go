@@ -2,6 +2,7 @@ package dal
 
 import (
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"imdb_project/data/dto"
 	"imdb_project/data/entity"
 	"imdb_project/data/mapper"
@@ -61,7 +62,7 @@ func (serviceHelper *ServiceHelper) FindAllTvShows() []entity.TVShow {
 }
 
 func (serviceHelper *ServiceHelper) FindAllCelebrities() []entity.Celebrity {
-	celebrities, err := serviceHelper.CelebrityRepository.FindAll()
+	celebrities, err := serviceHelper.CelebrityRepository.FindAllEager([]string{"Movies", "TVShows", "Photos"})
 
 	if err != nil {
 		log.Println("Failed to find celebrities:", err)
@@ -170,13 +171,9 @@ func (serviceHelper *ServiceHelper) AddWatchList(userID, mediaID uuid.UUID, medi
 
 func (serviceHelper *ServiceHelper) RemoveWatchList(userID, mediaID uuid.UUID, mediaType string) bool {
 
-	watchList, err := serviceHelper.UserRepository.FindByIdEager(userID, []string{"WatchList"})
-	if err != nil {
-		log.Println("Failed to find user watch list:", err)
-		return false
-	}
+	watchList := serviceHelper.FindWatchListByUserID(userID)
 
-	item, err := serviceHelper.findWatchListItem(watchList.WatchList.ID, mediaID, mediaType)
+	item, err := serviceHelper.findWatchListItem(watchList, mediaID, mediaType)
 	if err != nil {
 		log.Println("Failed to find watch list item:", err)
 		return false
@@ -210,7 +207,7 @@ func (serviceHelper *ServiceHelper) FindUserByID(userID string) *entity.User {
 		return nil
 	}
 
-	user, err := serviceHelper.UserRepository.FindByID(id)
+	user, err := serviceHelper.UserRepository.FindByIdEager(id, []string{"WatchList", "Rates", "Likes"})
 	if err != nil {
 		log.Printf("Failed to find user: %v", err)
 		return nil
@@ -241,6 +238,14 @@ func (serviceHelper *ServiceHelper) FindUserByEmail(email string) *entity.User {
 	}
 
 	return user
+}
+
+func (serviceHelper *ServiceHelper) FindWatchListByUserID(id uuid.UUID) *entity.WatchList {
+	watchList, _ := serviceHelper.WatchListRepository.FindOneByFilterEager(func(db *gorm.DB) *gorm.DB {
+		return db.Where("user_id = ?", id.String())
+	}, []string{"Items"})
+
+	return watchList
 }
 
 //...

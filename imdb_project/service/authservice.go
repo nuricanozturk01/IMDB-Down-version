@@ -21,30 +21,32 @@ func NewAuthenticationService(authHelper *dal.ImdbHelper) *AuthenticationService
 }
 
 // Login Normal login operation with email and password
-func (service *AuthenticationService) Login(email string, password string) dto.ResponseDTO[dto.AuthResponseDTO] {
+func (service *AuthenticationService) Login(email string, password string) dto.ResponseDTO[dto.UserDTO] {
 
 	user := service.AuthHelper.FindUserByEmail(email)
 
 	if user == nil {
-		return dto.ResponseDTO[dto.AuthResponseDTO]{StatusCode: 404, Data: &dto.AuthResponseDTO{Token: ""}}
+		return dto.ResponseDTO[dto.UserDTO]{StatusCode: 404, Data: nil}
 	}
 
 	if !util.CheckPasswordHash(password, user.Password) {
-		return dto.ResponseDTO[dto.AuthResponseDTO]{StatusCode: 401, Data: &dto.AuthResponseDTO{Token: ""}}
+		return dto.ResponseDTO[dto.UserDTO]{StatusCode: 401, Data: nil}
 	}
-
-	return dto.ResponseDTO[dto.AuthResponseDTO]{StatusCode: 200, Data: &dto.AuthResponseDTO{Token: "token"}}
+	userDTO := mapper.UserToUserDTO(user)
+	return dto.ResponseDTO[dto.UserDTO]{Message: " Success!", StatusCode: 200, Data: &userDTO}
 }
 
 func (service *AuthenticationService) LoginOAuth2(googleDTO *dto.GoogleUserDTO) dto.ResponseDTO[dto.UserDTO] {
+	var userDTO *dto.UserDTO
+	user := service.AuthHelper.FindUserByEmail(googleDTO.Email)
 
-	isExistUser := service.AuthHelper.FindUserByEmail(googleDTO.Email)
-
-	if isExistUser == nil {
-		return service.Register(mapper.GoogleUserToUserCreateDTO(googleDTO))
+	if user == nil {
+		userDTO = service.Register(mapper.GoogleUserToUserCreateDTO(googleDTO)).Data
+	} else {
+		userDTO = mapper.UserToUserDTOPtr(user)
 	}
 
-	return dto.ResponseDTO[dto.UserDTO]{Message: "Success!", StatusCode: 200, Data: nil}
+	return dto.ResponseDTO[dto.UserDTO]{Message: "Success!", StatusCode: 200, Data: userDTO}
 }
 
 func (service *AuthenticationService) Register(registerDTO *dto.UserCreateDTO) dto.ResponseDTO[dto.UserDTO] {

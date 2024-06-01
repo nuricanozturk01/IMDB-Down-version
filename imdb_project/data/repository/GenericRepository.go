@@ -151,7 +151,9 @@ func (repository *GenericRepository[T, R]) FindByIdEager(id R, eagerAssociations
 
 	query := repository.Db
 
-	ForEach(eagerAssociations, func(association string) { query = query.Preload(association) })
+	for _, association := range eagerAssociations {
+		query = query.Preload(association)
+	}
 
 	if err := query.First(&entity, id).Error; err != nil {
 		log.Panic("Error while fetching entity: ", err)

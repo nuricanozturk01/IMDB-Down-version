@@ -16,6 +16,7 @@ type User struct {
 	WatchList WatchList `gorm:"foreignKey:UserID"`
 	Likes     []Like    `gorm:"foreignKey:UserID"`
 	Photos    []Photo   `json:"photos" gorm:"polymorphic:Media;polymorphicValue:users"`
+	Rates     []Rate    `json:"rates" gorm:"foreignKey:UserID"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

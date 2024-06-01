@@ -106,6 +106,7 @@ func (controller *AuthController) GoogleCallback(ctx *gin.Context) {
 		}
 		session.Values["authenticated"] = true
 		session.Values["user"] = googleUserDTO.Email
+		session.Values["id"] = result.Data.ID.String()
 
 		session.Options = &sessions.Options{
 			Path:     "/",
@@ -147,6 +148,7 @@ func (controller *AuthController) Login(ctx *gin.Context) {
 		session, _ := controller.Store.Get(ctx.Request, "imdb-session")
 		session.Values["authenticated"] = true
 		session.Values["user"] = login.Email
+		session.Values["id"] = result.Data.ID.String()
 
 		session.Options = &sessions.Options{
 			Path:     "/",
