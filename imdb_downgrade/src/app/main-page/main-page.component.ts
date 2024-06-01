@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {SearchService} from "../services/search.service";
-import {MovieDTO} from "../../dto/dtos";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {MovieDTO, TvShowDTO} from "../../dto/dtos";
+import {NgbModal, NgbNavConfig} from "@ng-bootstrap/ng-bootstrap";
 import {RateComponent} from "../rate/rate.component";
+import {MessageService} from "../services/message.service";
 
 @Component({
   selector: 'app-main-page',
@@ -13,8 +14,16 @@ import {RateComponent} from "../rate/rate.component";
 export class MainPageComponent implements OnInit {
   movies: MovieDTO[] = [];
   movieSlides: MovieDTO[][] = [];
+  tvShowSlides: TvShowDTO[][] = [];
+  tvShows: TvShowDTO[] = [];
 
-  constructor(private route: Router, private service: SearchService, private modal: NgbModal) {
+  constructor(private route: Router,
+              private messageService: MessageService,
+              private service: SearchService,
+              config: NgbNavConfig,
+              private modal: NgbModal) {
+    config.destroyOnHide = false;
+    config.roles = false;
   }
 
   ngOnInit(): void {
@@ -22,6 +31,14 @@ export class MainPageComponent implements OnInit {
       this.movies = response;
       this.movieSlides = this.chunkArray(this.movies, 4);
     });
+
+    this.service.findAllTvShows().subscribe((response: TvShowDTO[]) => {
+      console.log("TVR: ", response);
+      this.tvShows = response;
+      this.tvShowSlides = this.chunkArray(this.tvShows, 4);
+    });
+
+    console.log("TV: ", this.tvShows);
   }
 
   private chunkArray(myArray, chunk_size) {
@@ -33,16 +50,27 @@ export class MainPageComponent implements OnInit {
     return results;
   }
 
-  clickItem(movie: MovieDTO) {
+  clickMovieItem(movie: MovieDTO) {
     this.service.findMovieDetails(movie.id).subscribe((response: MovieDTO) => {
-      console.log("DTO: ", response);
       this.route.navigate(['/details', {movie: JSON.stringify(response)}]);
+    });
+  }
+
+  clickTvItem(movie: TvShowDTO) {
+    this.service.findTvShowDetails(movie.id).subscribe((response: MovieDTO) => {
+      this.route.navigate(['/tv-details', {tvShow: JSON.stringify(response)}]);
     });
   }
 
   clickAddOnWatchList(movie: MovieDTO) {
     this.service.addOnWatchList(movie.id).subscribe((response: string) => {
-      console.log(response);
+      this.messageService.showSuccess("Success", response);
+    })
+  }
+
+  clickAddOnWatchListTv(tv: TvShowDTO) {
+    this.service.addOnWatchList(tv.id, "tv_show").subscribe((response: string) => {
+      this.messageService.showSuccess("Success", response);
     })
   }
 
@@ -51,6 +79,18 @@ export class MainPageComponent implements OnInit {
       size: 'lg',
       backdrop: 'static',
     });
+    modalRef.componentInstance.movie = movie;
+    modalRef.componentInstance.mediaType = "movie";
+    modalRef.componentInstance.showModal = true;
+  }
+
+  clickRateTv(tvShow: TvShowDTO) {
+    const modalRef = this.modal.open(RateComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    });
+    modalRef.componentInstance.tvShow = tvShow;
+    modalRef.componentInstance.mediaType = "tv";
     modalRef.componentInstance.showModal = true;
   }
 }

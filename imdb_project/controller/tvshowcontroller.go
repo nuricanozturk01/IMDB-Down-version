@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
@@ -26,9 +25,10 @@ func (c *TVShowController) SubscribeEndpoints(engine *gin.RouterGroup) {
 	engine.POST("/api/v1/tv_show/create", c.CreateTvShow)
 	engine.POST("/api/v1/tv_show/like", c.LikeTvShow)
 	engine.POST("/api/v1/tv_show/dislike", c.DislikeTvShow)
-	engine.GET("/api/v1/tv_show/all", c.FindAllTvShows)
-	engine.GET("/api/v1/tv_show/:id", c.FindTvShowById)
 	engine.POST("/api/v1/tv_show/watchlist", c.AddTvShowToWatchList)
+	engine.POST("/api/v1/tv_show/rate", c.RateTvShow)
+	engine.GET("/api/v1/tv_show/all", c.FindAllTvShows)
+	engine.GET("/api/v1/tv_show", c.FindTvShowById)
 	engine.DELETE("/api/v1/tv_show/watchlist", c.RemoveTvShowFromWatchList)
 }
 
@@ -92,14 +92,9 @@ func (c *TVShowController) FindAllTvShows(context *gin.Context) {
 }
 
 func (c *TVShowController) FindTvShowById(context *gin.Context) {
+	id := uuid.MustParse(context.Query("id"))
 
-	id := context.Param("id")
-	parsedUUID, err := uuid.Parse(id)
-	if err != nil {
-		fmt.Printf("Error parsing UUID: %v\n", err)
-		return
-	}
-	response := c.TvShowService.FindTvShowById(parsedUUID)
+	response := c.TvShowService.FindTvShowById(id)
 	context.JSON(int(response.StatusCode), response)
 }
 
@@ -149,13 +144,19 @@ func (c *TVShowController) RemoveTvShowFromWatchList(context *gin.Context) {
 }
 
 func (c *TVShowController) RateTvShow(context *gin.Context) {
-	rate, _ := strconv.ParseFloat(context.Query("rate"), 64)
 
-	tvShowId := uuid.MustParse(context.Query("tv_show_id"))
+	userID := c.getUserID(context)
+	tvShowId, _ := uuid.Parse(context.Query("tv_show_id"))
+	rate, _ := context.GetQuery("rate")
 
-	userId := c.getUserID(context)
+	rateFloat, err := strconv.ParseFloat(rate, 64)
 
-	response := c.TvShowService.RateTvShow(tvShowId, userId, rate)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	response := c.TvShowService.RateTvShow(tvShowId, userID, rateFloat)
 
 	context.JSON(int(response.StatusCode), response)
 }

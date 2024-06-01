@@ -6,10 +6,7 @@ i {
 .filled {
   color: #1e90ff;
 }
-.low {
-  color: #deb0b0;
+.rate-modal {
+  background-color: #1c1c1c;
+  color: #fff;
 }
-.filled.low {
-  color: #ff1e1e;
-}
-

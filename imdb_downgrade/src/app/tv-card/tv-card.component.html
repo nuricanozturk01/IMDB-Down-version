@@ -1,16 +1,16 @@
-<div class="card mb-3" (click)="clickShowDetailsTvShow(tvShow)">
+<div class="card mb-3">
   <div class="row g-0">
-    <div class="col-md-4">
-      <img src="{{ tvShow.photos[0].url }}" class="img-fluid rounded-start" alt="..." width="50%">
+    <div class="col-md-2" (click)="clickShowDetailsTvShow(tvShow)" style="cursor: pointer">
+      <img src="{{ tvShow.photos[0].url }}" class="img-fluid rounded-start" alt="..." width="100%">
     </div>
-    <div class="col-md-8">
+    <div class="col-md-10">
       <div class="card-body position-relative">
         <button type="button" class="btn btn-danger position-absolute top-0 end-0 m-2" (click)="clickRemoveFromWatchList(tvShow)">
           <i class="bi bi-trash"></i>
         </button>
         <h5 class="card-title">{{ tvShow.name }}</h5>
         <p class="card-text">
-          <span class="badge bg-primary">Movie</span>
+          <span class="badge bg-primary">Tv Show</span>
           &nbsp;
           <span class="text-warning">&#9733; {{ tvShow.average_rate }} </span>
         </p>
@@ -28,7 +28,7 @@
         <p class="card-text">
           <strong>Stars:</strong>
           &nbsp;
-          <span class="badge bg-primary" *ngFor="let company of tvShow.celebrities">
+          <span class="badge bg-primary" *ngFor="let company of tvShow.celebs">
             {{ company.name }}
           </span>
           &nbsp;

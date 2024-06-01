@@ -22,10 +22,10 @@ func (c *MovieController) SubscribeEndpoints(engine *gin.RouterGroup) {
 	engine.POST("/api/v1/movie/create", c.CreateMovie)
 	engine.POST("/api/v1/movie/like", c.LikeMovie)
 	engine.POST("/api/v1/movie/dislike", c.DislikeMovie)
-	engine.GET("/api/v1/movie/all", c.FindAllMovies)
-	engine.GET("/api/v1/movie", c.FindMovieById)
 	engine.POST("/api/v1/movie/watchlist/add", c.AddMovieToWatchList)
 	engine.POST("/api/v1/movie/rate", c.RateMovie)
+	engine.GET("/api/v1/movie/all", c.FindAllMovies)
+	engine.GET("/api/v1/movie", c.FindMovieById)
 	engine.DELETE("/api/v1/movie/watchlist/delete", c.RemoveMovieFromWatchList)
 }
 

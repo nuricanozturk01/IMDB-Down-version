@@ -1,12 +1,12 @@
-<div class="modal-body">
+<div class="rate-modal modal-body">
+  <h4 class="modal-title">Rate Media</h4>
   <div class="mb-3 d-flex flex-column align-items-center">
-    <ngb-rating [formControl]="ctrl" [max]="10" [readonly]="false" style="font-size: 1.5rem"></ngb-rating>
+    <ngb-rating [formControl]="ctrl" [max]="10" [readonly]="false"
+                style="font-size: 1.5rem;color: #007bff"></ngb-rating>
+    <b>{{ ctrl.value }}</b>
 
-   <!-- <div class="form-text mt-2">
-      <div *ngIf="ctrl.valid" class="text-success">Thanks!</div>
-      <div *ngIf="!ctrl.valid" class="text-danger">Please rate us</div>
-    </div>-->
+
   </div>
-  <hr/>
-  <pre>Model: <b>{{ ctrl.value }}</b></pre>
+  <!-- Add close button below -->
+  <button type="button" class="btn btn-primary" (click)="closeModal()">Close</button>
 </div>

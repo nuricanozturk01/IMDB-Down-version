@@ -2,23 +2,23 @@
 <app-navbar></app-navbar>
 <nav style="margin-top: 10px" class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div>
-    <a class="navbar-brand" style="font-size: 1.7rem;">{{ movie.name }}</a>
+    <a class="navbar-brand" style="font-size: 1.7rem;">{{ tvShow.name }}</a>
   </div>
   <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item d-flex flex-column align-items-center">
         <a class="nav-link">IMDB RATING</a>
-        <span class="badge badge-warning">{{ movie.average_rate }}/10</span>
+        <span class="badge badge-warning">{{ tvShow.average_rate }}/10</span>
       </li>
 
       <li class="nav-item d-flex flex-column align-items-center">
         <a class="nav-link">YOUR RATING</a>
-        <span class="badge badge-primary">{{ movie.average_rate }}</span>
+        <span class="badge badge-primary">{{ tvShow.average_rate }}</span>
       </li>
 
       <li class="nav-item d-flex flex-column align-items-center">
         <a class="nav-link">POPULARITY</a>
-        <span class="badge badge-danger">{{ movie.popularity }}</span>
+        <span class="badge badge-danger">{{ tvShow.popularity }}</span>
       </li>
     </ul>
   </div>
@@ -28,12 +28,12 @@
   <div class="row">
     <div class="col-md-3">
       <img
-        src="{{movie.photos[0].url}}"
+        src="{{tvShow.photos[0].url}}"
         class="img-fluid" alt="Fringe Poster" width="300" height="400">
     </div>
     <div class="col-md-7">
       <div class="embed-responsive embed-responsive-16by9 mb-3">
-        <iframe *ngIf="movie && movie.trailers.length > 0" width="300" height="300" [src]="movie.trailers[0].safeUrl"
+        <iframe *ngIf="tvShow && tvShow.trailers.length > 0" width="300" height="300" [src]="tvShow.trailers[0].safeUrl"
                 frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen></iframe>
@@ -60,16 +60,16 @@
       <span class="badge badge-light">Sci-Fi</span>
     </div>
   </div>
-  <p class="mt-3">{{ movie.description }}</p>
+  <p class="mt-3">{{ tvShow.description }}</p>
 
   <p class="mt-3">
     <strong>Celebrities: </strong>
-    <span class="badge badge-danger" *ngFor="let celeb of movie.celebs">{{ celeb.name }}</span>
+    <span class="badge badge-danger" *ngFor="let celeb of tvShow.celebs">{{ celeb.name }}</span>
   </p>
 
   <p class="mt-3">
     <strong>Companies </strong>
-    <span class="badge badge-danger" *ngFor="let company of movie.companies">{{ company.name }}</span>
+    <span class="badge badge-danger" *ngFor="let company of tvShow.companies">{{ company.name }}</span>
   </p>
 </div>
 

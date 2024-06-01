@@ -27,7 +27,7 @@ export class TvShowDTO {
   public photos: Photo[]
   public companies: Company[]
   public likes: Like[]
-  public celebrities: Celebrity[]
+  public celebs: Celebrity[]
 
 }
 

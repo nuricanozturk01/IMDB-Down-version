@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/sessions"
@@ -131,7 +130,6 @@ func (controller *AuthController) GoogleCallback(ctx *gin.Context) {
 func (controller *AuthController) Login(ctx *gin.Context) {
 	var login *dto.LoginDTO
 	err := ctx.BindJSON(&login)
-	fmt.Println(login.Email)
 
 	if validationErr := controller.Validate.Struct(login); validationErr != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})

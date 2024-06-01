@@ -51,7 +51,7 @@ func (serviceHelper *ServiceHelper) FindAllMovies() []entity.Movie {
 }
 
 func (serviceHelper *ServiceHelper) FindAllTvShows() []entity.TVShow {
-	tvShows, err := serviceHelper.TvShowRepository.FindAll()
+	tvShows, err := serviceHelper.TvShowRepository.FindAllEager([]string{"Trailers", "Companies", "Celebs", "Photos", "Likes"})
 
 	if err != nil {
 		log.Println("Failed to find tv shows:", err)
@@ -84,7 +84,7 @@ func (serviceHelper *ServiceHelper) FindMovieByID(id uuid.UUID) *entity.Movie {
 }
 
 func (serviceHelper *ServiceHelper) FindTvShowByID(id uuid.UUID) *entity.TVShow {
-	tvShow, err := serviceHelper.TvShowRepository.FindByID(id)
+	tvShow, err := serviceHelper.TvShowRepository.FindByIdEager(id, []string{"Trailers", "Companies", "Celebs", "Photos", "Likes"})
 
 	if err != nil {
 		log.Println("Failed to find tv show:", err)

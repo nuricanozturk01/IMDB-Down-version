@@ -1,8 +1,12 @@
 package service
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"imdb_project/config/sqs"
 	"imdb_project/data/dal"
 	"imdb_project/data/dto"
 	"imdb_project/data/entity"
@@ -11,6 +15,12 @@ import (
 	"math"
 	"net/http"
 )
+
+type GenericMessage struct {
+	Message string `json:"message"`
+	Id      string `json:"id"`
+	Type    string `json:"type"`
+}
 
 type IMovieService interface {
 	CreateMovie(movie *dto.MovieCreateDTO) dto.ResponseDTO[dto.MovieDTO]
@@ -25,10 +35,11 @@ type IMovieService interface {
 
 type MovieService struct {
 	ServiceHelper *dal.ImdbHelper
+	QueueService  *sqs.QueueService
 }
 
-func NewMovieService(serviceHelper *dal.ImdbHelper) *MovieService {
-	return &MovieService{ServiceHelper: serviceHelper}
+func NewMovieService(serviceHelper *dal.ImdbHelper, queueService *sqs.QueueService) *MovieService {
+	return &MovieService{ServiceHelper: serviceHelper, QueueService: queueService}
 }
 
 func (service *MovieService) CreateMovie(movie *dto.MovieCreateDTO) dto.ResponseDTO[dto.MovieDTO] {
@@ -72,12 +83,24 @@ func (service *MovieService) FindAllMovies() dto.ResponseDTO[[]dto.MovieDTO] {
 
 	return dto.ResponseDTO[[]dto.MovieDTO]{Message: "Movies fetched successfully", StatusCode: http.StatusOK, Data: &moviesDTO}
 }
+func (service *MovieService) saveSQSMessage(movieId string) {
+	msg := GenericMessage{Message: "Movie fetched successfully", Id: movieId, Type: enum.MovieType}
+	messageBody, _ := json.Marshal(msg)
 
+	err := service.QueueService.SendMessage(context.Background(), string(messageBody))
+
+	if err != nil {
+		fmt.Println("Failed to send message to SQS", err.Error())
+	}
+}
 func (service *MovieService) FindMovieById(movieId uuid.UUID) dto.ResponseDTO[dto.MovieDTO] {
-
 	movie := service.ServiceHelper.FindMovieByID(movieId)
 
 	movieDTO := mapper.MovieToMovieDTO(movie)
+
+	if service.QueueService != nil {
+		go service.saveSQSMessage(movieId.String())
+	}
 
 	return dto.ResponseDTO[dto.MovieDTO]{Message: "Movie fetched successfully", StatusCode: http.StatusOK, Data: &movieDTO}
 }
@@ -95,6 +118,10 @@ func (service *MovieService) AddMovieToWatchList(userId uuid.UUID, mediaID uuid.
 	}
 
 	result := service.ServiceHelper.AddWatchList(userId, mediaID, enum.MovieType)
+
+	if service.QueueService != nil {
+		go service.saveSQSMessage(mediaID.String())
+	}
 
 	return dto.ResponseDTO[bool]{Message: "Item added to watch list successfully", StatusCode: http.StatusOK, Data: &result}
 }
@@ -138,6 +165,9 @@ func (service *MovieService) RateMovie(movieId uuid.UUID, userId uuid.UUID, rate
 
 	if _, err = service.ServiceHelper.RateRepository.Create(&rateEntity); err != nil {
 		return dto.ResponseDTO[string]{Message: "Failed to rate movie", StatusCode: http.StatusInternalServerError, Data: nil}
+	}
+	if service.QueueService != nil {
+		go service.saveSQSMessage(movieId.String())
 	}
 
 	return dto.ResponseDTO[string]{Message: "Movie rated successfully", StatusCode: http.StatusOK, Data: nil}

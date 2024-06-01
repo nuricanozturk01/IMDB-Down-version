@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TvShowDTO} from "../../dto/dtos";
 import {SearchService} from "../services/search.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-tv-card',
@@ -11,7 +12,7 @@ export class TvCardComponent {
   @Input() tvShow: TvShowDTO;
   @Output() removeFromWatchList = new EventEmitter<TvShowDTO>();
 
-  constructor(private searchService: SearchService) {
+  constructor(private searchService: SearchService, private route: Router) {
   }
 
   clickRemoveFromWatchList(tvShow: TvShowDTO) {
@@ -21,6 +22,8 @@ export class TvCardComponent {
   }
 
   clickShowDetailsTvShow(tvShow: TvShowDTO) {
-
+    this.searchService.findTvShowDetails(tvShow.id).subscribe((response: TvShowDTO) => {
+      this.route.navigate(['/tv-details', {tvShow: JSON.stringify(response)}]);
+    });
   }
 }

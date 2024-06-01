@@ -1,21 +1,26 @@
 <body>
 <app-navbar></app-navbar>
 <div class="container mt-5">
-  <div class="row">
-    <div class="col-md-12">
-      <h1 style="color:white" class="text-center">Top 10 IMDB in this week</h1>
-    </div>
-  </div>
-  <ngb-carousel>
-    <ng-template ngbSlide *ngFor="let slide of movieSlides">
-      <div class="row justify-content-center" style="margin-bottom: 40px">
-        <div class="col-md-2 text-center" *ngFor="let movie of slide">
-          <div class="card text-center" style="width: 13rem;">
-            <img (click)="clickItem(movie)" [src]="movie.photos[0].url" class="card-img-top" alt="{{ movie.name }}">
-            <div class="card-body">
-              <div class="justify-content-around d-flex">
-                <span class="card-text">{{ movie.average_rate }} ★</span>
-                <span class="card-text">
+  <ul ngbNav #nav="ngbNav" class="nav-tabs">
+    <li ngbNavItem>
+      <a ngbNavLink>Movies</a>
+      <ng-template ngbNavContent>
+        <div class="row">
+          <div class="col-md-12">
+            <h1 style="color:white" class="text-center">Top 10 Movie IMDB in this week</h1>
+          </div>
+        </div>
+        <ngb-carousel>
+          <ng-template ngbSlide *ngFor="let slide of movieSlides">
+            <div class="row justify-content-center" style="margin-bottom: 40px">
+              <div class="col-md-2 text-center" *ngFor="let movie of slide">
+                <div class="card text-center" style="width: 13rem;">
+                  <img (click)="clickMovieItem(movie)" [src]="movie.photos[0].url" class="card-img-top"
+                       alt="{{ movie.name }}">
+                  <div class="card-body">
+                    <div class="justify-content-around d-flex">
+                      <span class="card-text">{{ movie.average_rate }} ★</span>
+                      <span class="card-text">
                   <a href="#" (click)="clickRateMovie(movie)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-star"
@@ -25,32 +30,92 @@
                   </svg>
                   </a>
                 </span>
-              </div>
+                    </div>
 
-              <span class="card-text">
+                    <span class="card-text">
                 <button class="btn btn-link">
-                  <i class="bi bi-star-fill"></i>
+
                 </button>
               </span>
-              <h6 class="card-title">{{ movie.name }}</h6>
-              <footer class="d-flex justify-content-center mt-4">
-                <button class="btn btn-dark" (click)="clickAddOnWatchList(movie)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                       class="bi bi-plus-lg justify-content-center align-content-center" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                          d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
-                  </svg>
+                    <h6 class="card-title">{{ movie.name }}</h6>
+                    <footer class="d-flex justify-content-center mt-4">
+                      <button class="btn btn-dark" (click)="clickAddOnWatchList(movie)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-plus-lg justify-content-center align-content-center" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd"
+                                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                        </svg>
 
-                  WatchList
-                </button>
-              </footer>
+                        WatchList
+                      </button>
+                    </footer>
 
+                  </div>
+                </div>
+              </div>
             </div>
+          </ng-template>
+        </ngb-carousel>
+      </ng-template>
+    </li>
+
+
+    <li ngbNavItem>
+      <a ngbNavLink>Tv Shows</a>
+      <ng-template ngbNavContent>
+        <div class="row">
+          <div class="col-md-12">
+            <h1 style="color:white" class="text-center">Top 10 Tv Show IMDB in this week</h1>
           </div>
         </div>
-      </div>
-    </ng-template>
-  </ngb-carousel>
-</div>
+        <ngb-carousel>
+          <ng-template ngbSlide *ngFor="let slide of tvShowSlides">
+            <div class="row justify-content-center" style="margin-bottom: 40px">
+              <div class="col-md-2 text-center" *ngFor="let tvShow of slide">
+                <div class="card text-center" style="width: 13rem;">
+                  <img (click)="clickTvItem(tvShow)" [src]="tvShow.photos[0].url" class="card-img-top"
+                       alt="{{ tvShow.name }}">
+                  <div class="card-body">
+                    <div class="justify-content-around d-flex">
+                      <span class="card-text">{{ tvShow.average_rate }} ★</span>
+                      <span class="card-text">
+                  <a href="#" (click)="clickRateTv(tvShow)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-star"
+                         viewBox="0 0 16 16">
+                    <path
+                      d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/>
+                  </svg>
+                  </a>
+                </span>
+                    </div>
 
+                    <span class="card-text">
+                <button class="btn btn-link">
+                </button>
+              </span>
+                    <h6 class="card-title">{{ tvShow.name }}</h6>
+                    <footer class="d-flex justify-content-center mt-4">
+                      <button class="btn btn-dark" (click)="clickAddOnWatchListTv(tvShow)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-plus-lg justify-content-center align-content-center" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd"
+                                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                        </svg>
+
+                        WatchList
+                      </button>
+                    </footer>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-carousel>
+      </ng-template>
+    </li>
+  </ul>
+  <div [ngbNavOutlet]="nav" class="mt-2"></div>
+</div>
 </body>

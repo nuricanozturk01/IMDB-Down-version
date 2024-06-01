@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// CorsPolicy is a middleware function that sets the CORS policy for the application. (Allow all origins)
 func CorsPolicy() gin.HandlerFunc {
 	corsConfig := cors.Config{
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},

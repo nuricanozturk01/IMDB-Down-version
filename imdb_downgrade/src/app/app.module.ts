@@ -11,11 +11,13 @@ import {RegisterComponent} from './register/register.component';
 import {DetailsComponent} from './details/details.component';
 import {HttpClientModule} from "@angular/common/http";
 import {ReactiveFormsModule} from "@angular/forms";
-import { IntroComponent } from './intro/intro.component';
-import { RateComponent } from './rate/rate.component';
-import { MovieCardComponent } from './movie-card/movie-card.component';
-import { WatchListComponent } from './watch-list/watch-list.component';
-import { TvCardComponent } from './tv-card/tv-card.component';
+import {IntroComponent} from './intro/intro.component';
+import {RateComponent} from './rate/rate.component';
+import {MovieCardComponent} from './movie-card/movie-card.component';
+import {WatchListComponent} from './watch-list/watch-list.component';
+import {TvCardComponent} from './tv-card/tv-card.component';
+import {ToastrModule} from "ngx-toastr";
+import { TvDetailsComponent } from './tv-details/tv-details.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { TvCardComponent } from './tv-card/tv-card.component';
     RateComponent,
     MovieCardComponent,
     WatchListComponent,
-    TvCardComponent
+    TvCardComponent,
+    TvDetailsComponent
   ],
   imports: [
     HttpClientModule,
@@ -37,7 +40,15 @@ import { TvCardComponent } from './tv-card/tv-card.component';
     NgbModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    NgbRatingModule
+    NgbRatingModule,
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      closeButton: true,
+      progressBar: true,
+      progressAnimation: 'increasing',
+      preventDuplicates: true,
+      positionClass: 'toast-top-right',
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]

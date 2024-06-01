@@ -33,7 +33,7 @@ func (service *AuthenticationService) Login(email string, password string) dto.R
 		return dto.ResponseDTO[dto.UserDTO]{StatusCode: 401, Data: nil}
 	}
 	userDTO := mapper.UserToUserDTO(user)
-	return dto.ResponseDTO[dto.UserDTO]{Message: " Success!", StatusCode: 200, Data: &userDTO}
+	return dto.ResponseDTO[dto.UserDTO]{Message: "Success!", StatusCode: 200, Data: &userDTO}
 }
 
 func (service *AuthenticationService) LoginOAuth2(googleDTO *dto.GoogleUserDTO) dto.ResponseDTO[dto.UserDTO] {

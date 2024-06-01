@@ -162,9 +162,3 @@ func (repository *GenericRepository[T, R]) FindByIdEager(id R, eagerAssociations
 
 	return entity, nil
 }
-
-func ForEach[T any](slice []T, f func(T)) {
-	for _, v := range slice {
-		f(v)
-	}
-}
