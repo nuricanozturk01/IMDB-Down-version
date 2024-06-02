@@ -74,8 +74,8 @@ Create a slimmed down version of IMDB web application that will have following u
 
 ## Architecture Diagram
 
-<img src="../images/arc.png" width="100%">
+<img src="/images/arc.png" width="100%">
 
 ## Database Schema
 
-<img src="../images/db.png" width="100%">
+<img src="/images/db.png" width="100%">
