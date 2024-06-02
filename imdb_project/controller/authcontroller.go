@@ -34,6 +34,7 @@ func NewAuthController(authService *service.AuthenticationService, informationSe
 func (controller *AuthController) SubscribeEndpoints(engine *gin.Engine) {
 	engine.POST("/api/auth/login", controller.Login)
 	engine.POST("/api/auth/register", controller.Register)
+	engine.POST("/api/auth/logout", controller.Logout)
 	engine.GET("/api/auth/google/login", controller.GoogleLogin)
 	engine.GET("/api/auth/google/callback", controller.GoogleCallback)
 	engine.GET("/api/countries/all", controller.FindAllCountries)

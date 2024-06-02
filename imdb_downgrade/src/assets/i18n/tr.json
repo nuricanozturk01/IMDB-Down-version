@@ -18,5 +18,6 @@
   "COUNTRY": "Ülke",
   "CITY": "Şehir",
   "PASSWORD_RULES": "En az 8 karakter, bir harf ve bir özel karakter içermelidir",
-  "CELEBRITIES": "Ünlüler"
+  "CELEBRITIES": "Ünlüler",
+  "LOGOUT": "Çıkış yap"
 }

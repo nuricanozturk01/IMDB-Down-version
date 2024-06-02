@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import {SearchService} from "../services/search.service";
 import {CelebrityDTO, MovieDTO, SearchDTO, TvShowDTO} from "../../dto/dtos";
 import {TranslateService} from "@ngx-translate/core";
+import {AuthenticationService} from "../services/authentication.service";
 
 
 @Component({
@@ -19,7 +20,8 @@ export class NavbarComponent {
   options: string[] = ['All', 'Titles', 'TV Episodes', 'Celebs', 'Companies'];
 
 
-  constructor(private translate: TranslateService, private router: Router, private service: SearchService) {
+  constructor(private translate: TranslateService, private router: Router, private service: SearchService,
+              private authService: AuthenticationService) {
     translate.addLangs(['en', 'tr']);
     translate.setDefaultLang('en');
 
@@ -104,5 +106,12 @@ export class NavbarComponent {
     this.tvShows = [];
     this.celebs = [];
     this.router.navigate(['/details', {movie: btoa(JSON.stringify(movie))}]);
+  }
+
+  logout() {
+    this.router.navigate(['/sign-in']).then(() => {
+        this.authService.logout().subscribe();
+      }
+    );
   }
 }

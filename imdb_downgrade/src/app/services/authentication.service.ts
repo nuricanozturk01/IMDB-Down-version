@@ -1,15 +1,16 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {catchError, map, Observable, throwError} from "rxjs";
+import {catchError, map, Observable} from "rxjs";
 import {LoginDTO} from "../../dto/LoginDTO";
 import {RegisterDTO} from "../../dto/dtos";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
   }
 
 
@@ -43,5 +44,20 @@ export class AuthenticationService {
           return [false];
         }
       ));
+  }
+
+  logout(): Observable<boolean> {
+    return this.http.post('http://localhost:5050/api/auth/logout', {}, {withCredentials: true}).pipe(
+      map((response: any) => {
+        if (response.status_code === 200) {
+          localStorage.clear();
+          return true;
+        }
+        return false;
+      }),
+      catchError((error: any) => {
+        return [false];
+      })
+    );
   }
 }

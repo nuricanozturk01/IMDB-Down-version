@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
         if (response.message === "Success!") {
           this.messageService.showSuccess("Login", "Login successful!")
           setTimeout(() => {
-            this.router.navigate(['/'])
+            this.router.navigate(['/main-page'])
           }, 500)
         } else {
           this.messageService.showError("Login", "Invalid credentials!")
