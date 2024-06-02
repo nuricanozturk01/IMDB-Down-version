@@ -3,11 +3,11 @@
 <div class="container mt-5">
   <ul ngbNav #nav="ngbNav" class="nav-tabs">
     <li ngbNavItem>
-      <a ngbNavLink>Movies</a>
+      <a ngbNavLink> {{ 'MAIN_MENU_MOVIES_TITLE' | translate }} </a>
       <ng-template ngbNavContent>
         <div class="row">
           <div class="col-md-12">
-            <h1 style="color:white" class="text-center">Top 10 Movie IMDB in this week</h1>
+            <h1 style="color:white" class="text-center">{{ 'MOVIE_TOP_10' | translate }}</h1>
           </div>
         </div>
         <ngb-carousel>
@@ -46,7 +46,7 @@
                                 d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
                         </svg>
 
-                        WatchList
+                        {{ 'WATCHLIST' | translate }}
                       </button>
                     </footer>
 
@@ -61,11 +61,11 @@
 
 
     <li ngbNavItem>
-      <a ngbNavLink>Tv Shows</a>
+      <a ngbNavLink>{{ 'MAIN_MENU_TV_SHOWS_TITLE' | translate }}</a>
       <ng-template ngbNavContent>
         <div class="row">
           <div class="col-md-12">
-            <h1 style="color:white" class="text-center">Top 10 Tv Show IMDB in this week</h1>
+            <h1 style="color:white" class="text-center">{{ 'TV_SHOW_TOP_10' | translate }}</h1>
           </div>
         </div>
         <ngb-carousel>
@@ -103,7 +103,7 @@
                                 d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
                         </svg>
 
-                        WatchList
+                        {{ 'WATCHLIST' | translate }}
                       </button>
                     </footer>
 

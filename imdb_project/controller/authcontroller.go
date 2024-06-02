@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/sessions"
@@ -133,20 +134,26 @@ func (controller *AuthController) GoogleCallback(ctx *gin.Context) {
 func (controller *AuthController) Login(ctx *gin.Context) {
 	var login *dto.LoginDTO
 	err := ctx.BindJSON(&login)
-
-	if validationErr := controller.Validate.Struct(login); validationErr != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
-		return
-	}
-
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	// Validation after binding the JSON to ensure all required fields are provided and valid
+	if validationErr := controller.Validate.Struct(login); validationErr != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
+		return
+	}
+
 	result := controller.AuthenticationService.Login(login.Email, login.Password)
 	if result.StatusCode == 201 || result.StatusCode == 200 {
-		session, _ := controller.Store.Get(ctx.Request, "imdb-session")
+		session, err := controller.Store.Get(ctx.Request, "imdb-session")
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get session: " + err.Error()})
+			return
+		}
+
+		// Assuming login is successful, set the new session values
 		session.Values["authenticated"] = true
 		session.Values["user"] = login.Email
 		session.Values["id"] = result.Data.ID.String()
@@ -157,16 +164,18 @@ func (controller *AuthController) Login(ctx *gin.Context) {
 			HttpOnly: true,
 			Secure:   false,
 		}
-
-		err := session.Save(ctx.Request, ctx.Writer)
+		fmt.Println(session.Values["id"])
+		// Save the session before responding
+		err = session.Save(ctx.Request, ctx.Writer)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session: " + err.Error()})
 			return
 		}
-
-		ctx.JSON(http.StatusOK, gin.H{"message": "Logged in successfully", "sessionID": session.ID})
+		ctx.JSON(int(result.StatusCode), result)
+	} else {
+		fmt.Println(result)
+		ctx.JSON(int(result.StatusCode), result)
 	}
-	ctx.JSON(int(result.StatusCode), result)
 }
 
 func (controller *AuthController) Register(ctx *gin.Context) {

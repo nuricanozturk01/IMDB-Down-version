@@ -27,6 +27,16 @@ export class MainPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.service.getUserInfo().subscribe((response: any) => {
+      if (response) {
+        if (localStorage.getItem("email") === null || localStorage.getItem("email") === undefined) {
+          localStorage.setItem("email", response.email)
+          localStorage.setItem("first_name", response.first_name)
+          localStorage.setItem("last_name", response.last_name)
+          localStorage.setItem("id", response.id)
+        }
+      }
+    })
     this.service.findAllMovies().subscribe((response: MovieDTO[]) => {
       this.movies = response;
       this.movieSlides = this.chunkArray(this.movies, 4);

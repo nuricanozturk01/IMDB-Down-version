@@ -17,6 +17,7 @@ export class MovieCardComponent {
 
   clickRemoveFromWatchList(movie: MovieDTO) {
     this.searchService.removeOnWatchList(movie.id).subscribe((response: string) => {
+      console.log("REM: ",response);
       this.removeFromWatchList.emit(movie);
     });
   }

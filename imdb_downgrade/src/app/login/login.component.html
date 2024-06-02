@@ -7,15 +7,15 @@
       </div>
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title text-center mb-4">Sign in</h4>
+          <h4 class="card-title text-center mb-4">{{ 'SIGN_IN' | translate }}</h4>
           <button (click)="loginWithGoogle()"
                   class="btn btn-outline-secondary w-100 mb-3 d-flex align-items-center justify-content-center">
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1024px-Google_%22G%22_logo.svg.png"
               alt="Google Logo" style="width: 20px; height: 20px; margin-right: 10px;">
-            Sign in with Google
+            {{ 'SIGN_IN_GOOGLE' | translate }}
           </button>
-          <div class="text-center">or</div>
+          <div class="text-center">{{ 'OR' | translate }}</div>
           <form [formGroup]="loginForm" (ngSubmit)="login()">
             <div class="form-group mb-3">
               <label for="email">Email</label>
@@ -28,8 +28,8 @@
                      required formControlName="password">
             </div>
             <div class="d-flex justify-content-around">
-              <button type="submit" class="btn btn-primary w-25">Login</button>
-              <a routerLink="/register" class="btn btn-secondary w-25">Sign up</a>
+              <button type="submit" class="btn btn-primary w-25">{{ 'LOGIN' | translate }}</button>
+              <a routerLink="/register" class="btn btn-secondary w-25">{{ 'SIGN_UP' | translate }}</a>
             </div>
           </form>
         </div>

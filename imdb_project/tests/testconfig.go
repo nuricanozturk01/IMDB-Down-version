@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	helper "imdb_project/data/dal"
 	"imdb_project/data/entity"
@@ -54,7 +54,7 @@ func initTestDB() (*gorm.DB, error) {
 
 	var err error
 
-	db, err := gorm.Open(mysql.Open(databaseConnection), &gorm.Config{
+	db, err := gorm.Open(sqlite.Open(databaseConnection), &gorm.Config{
 		//Logger: logger.Default.LogMode(logger.Info),
 	})
 
@@ -81,16 +81,14 @@ func initTestDB() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	log.Println("Database migrated successfully")
+	//log.Println("Database migrated successfully")
 
 	return db, nil
 }
 func resetTestDB() error {
 	databaseConnection := os.Getenv("TEST_DB_DSN")
 
-	db, err := gorm.Open(mysql.Open(databaseConnection), &gorm.Config{
-		//Logger: logger.Default.LogMode(logger.Info),
-	})
+	db, err := gorm.Open(sqlite.Open(databaseConnection), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
@@ -111,8 +109,6 @@ func resetTestDB() error {
 		&entity.WatchListItem{},
 	)
 
-	log.Println("Database tables dropped successfully")
-
 	// Recreate all tables
 	err = db.AutoMigrate(
 		&entity.User{},
@@ -130,8 +126,6 @@ func resetTestDB() error {
 	if err != nil {
 		return err
 	}
-
-	log.Println("Database migrated successfully")
 
 	return nil
 }

@@ -2,6 +2,9 @@
   <app-navbar></app-navbar>
 </div>
 <div class="container mt-5 d-flex flex-wrap justify-content-center">
+  <div *ngIf="movies === null && tvShows === null  || (movies.length === 0 && tvShows.length === 0) ">
+    <h1 class="text-center" style="color: white">{{ 'WATCHLIST_EMPTY' | translate }}</h1>
+  </div>
   <div *ngFor="let movie of movies">
     <app-movie-card [movie]="movie" (removeFromWatchList)="onRemoveFromWatchList($event)"></app-movie-card>
   </div>

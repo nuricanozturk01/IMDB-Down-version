@@ -7,20 +7,25 @@ import {
   LIKE_MOVIE,
   REMOVE_WATCH_LIST_MOVIE,
   REMOVE_WATCH_LIST_TV,
+  REQUEST_ALL_COUNTRIES,
   REQUEST_ALL_MOVIES,
   REQUEST_ALL_TV_SHOW,
   REQUEST_CELEBRITY_DETAILS,
+  REQUEST_CITIES_BY_COUNTRY,
   REQUEST_MOVIE_DETAILS,
   REQUEST_RATE_MOVIE,
   REQUEST_RATE_TV_SHOW,
   REQUEST_SEARCH,
   REQUEST_TV_SHOW_DETAILS,
+  REQUEST_USER_INFO,
   REQUEST_WATCH_LIST
 } from "./connection";
 import {
   Celebrity,
   CelebrityDTO,
+  CityDTO,
   Company,
+  CountryDTO,
   Like,
   MovieDTO,
   Photo,
@@ -332,6 +337,41 @@ export class SearchService {
           console.log("RESPONSE: ", response)
           return response.data;
         }
+      }),
+      catchError((error: any) => {
+          return null
+        }
+      ));
+  }
+
+  getCountries(): Observable<CountryDTO[]> {
+    return this.http.get(REQUEST_ALL_COUNTRIES).pipe(
+      map((response: any) => {
+        return response.countries;
+      }),
+      catchError((error: any) => {
+          return null
+        }
+      ));
+  }
+
+  getCitiesByCountryName(countryName: string): Observable<CityDTO[]> {
+    return this.http.get(REQUEST_CITIES_BY_COUNTRY(countryName)).pipe(
+      map((response: any) => {
+        console.log("RESPONSE: ", response)
+        return response.cities;
+      }),
+      catchError((error: any) => {
+          return null
+        }
+      ));
+  }
+
+  getUserInfo() : Observable<any> {
+    return this.http.get(REQUEST_USER_INFO, {withCredentials: true}).pipe(
+      map((response: any) => {
+        console.log("RESPONSE: ", response)
+        return response.data;
       }),
       catchError((error: any) => {
           return null

@@ -81,7 +81,7 @@ func Run() {
 
 	// Controller Layer
 	authController := controller.NewAuthController(authenticationService, informationService, validate, store)
-	userController := controller.NewUserController(userService, validate)
+	userController := controller.NewUserController(userService, validate, store)
 	movieController := controller.NewMovieController(movieService, validate, store)
 	tvShowController := controller.NewTVShowController(tvShowService, validate, store)
 	searchController := controller.NewSearchController(searchService, celebrityService, validate, store)

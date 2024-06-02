@@ -125,7 +125,29 @@ export class MovieSliderDTO {
 
 
 export class WatchListDTO {
-  public id : string;
+  public id: string;
   public movies: MovieDTO[]
   public tv_shows: TvShowDTO[]
+}
+
+export class CityDTO {
+  ID: number;
+  CityName: string;
+  CountryCode: string;
+}
+
+export class CountryDTO {
+  public CountryCode: string;
+  public CountryName: string;
+  public Cities: CityDTO[];
+}
+
+
+export class RegisterDTO {
+  public first_name: string;
+  public last_name: string;
+  public email: string;
+  public password: string;
+  public country: string;
+  public city: string;
 }

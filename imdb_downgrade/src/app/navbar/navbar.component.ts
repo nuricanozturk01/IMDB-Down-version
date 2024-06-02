@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {Router} from "@angular/router";
 import {SearchService} from "../services/search.service";
 import {CelebrityDTO, MovieDTO, SearchDTO, TvShowDTO} from "../../dto/dtos";
+import {TranslateService} from "@ngx-translate/core";
 
 
 @Component({
@@ -14,9 +15,29 @@ export class NavbarComponent {
   movies: MovieDTO[] = [];
   tvShows: TvShowDTO[] = [];
   celebs: CelebrityDTO[] = [];
+  selectedOption: string = 'All';
+  options: string[] = ['All', 'Titles', 'TV Episodes', 'Celebs', 'Companies'];
 
-  constructor(private router: Router, private service: SearchService) {
+
+  constructor(private translate: TranslateService, private router: Router, private service: SearchService) {
+    translate.addLangs(['en', 'tr']);
+    translate.setDefaultLang('en');
+
+    const savedLang = localStorage.getItem('language');
+    const browserLang = savedLang || translate.getBrowserLang();
+    translate.use(browserLang.match(/en|tr/) ? browserLang : 'en');
   }
+
+
+  switchLanguage(language: string) {
+    this.translate.use(language);
+    localStorage.setItem('language', language);
+  }
+
+  selectOption(option: string) {
+    this.selectedOption = option;
+  }
+
 
   onSearch(query: string) {
     if (query.length >= 2) {
@@ -33,6 +54,20 @@ export class NavbarComponent {
           this.celebs = response.celebrities;
         }
       });
+
+      if (this.selectedOption === 'Titles') {
+        this.celebs = [];
+      }
+
+      if (this.selectedOption === 'TV Episodes') {
+        this.movies = [];
+        this.celebs = [];
+      }
+
+      if (this.selectedOption === 'Celebs') {
+        this.movies = [];
+        this.tvShows = [];
+      }
 
     } else {
       this.isFoundResults = false;
@@ -52,18 +87,6 @@ export class NavbarComponent {
     this.service.findCelebrityById(celebrity.id).subscribe((response: CelebrityDTO) => {
       this.router.navigate(['/celebrity', {celebrity: btoa(JSON.stringify(response))}]);
     });
-
-
-    /* this.router.navigate(['/celebrity']).then(success => {
-       if (success) {
-         console.log('Navigation successful!');
-       } else {
-         console.log('Navigation failed!');
-         console.error('Navigation failed to /celebrity-details');
-       }
-     }).catch(err => {
-       console.error('Navigation error:', err);
-     });*/
   }
 
 

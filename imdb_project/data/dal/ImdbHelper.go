@@ -246,7 +246,9 @@ func (serviceHelper *ServiceHelper) FindAllUsers() []entity.User {
 
 func (serviceHelper *ServiceHelper) FindUserByEmail(email string) *entity.User {
 
-	user, err := serviceHelper.UserRepository.FindOneByFilter(findByEmailCallback(email))
+	user, err := serviceHelper.UserRepository.FindOneByFilter(func(db *gorm.DB) *gorm.DB {
+		return db.Where("email = ?", email)
+	})
 
 	if err != nil {
 		log.Println("Failed to find user:", err)

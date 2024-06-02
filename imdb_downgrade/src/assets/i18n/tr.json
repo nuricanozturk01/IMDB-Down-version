@@ -1,0 +1,22 @@
+{
+  "WATCHLIST": "İzleme Listesi",
+  "MAIN_MENU_MOVIES_TITLE": "Filmler",
+  "MAIN_MENU_TV_SHOWS_TITLE": "Diziler",
+  "MOVIE_TOP_10": "Bu haftanın en iyi 10 filmi",
+  "TV_SHOW_TOP_10": "Bu haftanın en iyi 10 dizisi",
+  "LANG_BTN": "Dil",
+  "WATCHLIST_EMPTY": "İzleme listesi boş",
+  "SEARCH_PLACEHOLDER": "Ara...",
+  "SIGN_IN": "Giriş yap",
+  "SIGN_UP": "Kayıt ol",
+  "SIGN_OUT": "Çıkış yap",
+  "LOGIN": "Giriş yap",
+  "SIGN_IN_GOOGLE": "Google ile giriş yap",
+  "OR": "veya",
+  "FIRST_NAME": "Ad",
+  "LAST_NAME": "Soyad",
+  "COUNTRY": "Ülke",
+  "CITY": "Şehir",
+  "PASSWORD_RULES": "En az 8 karakter, bir harf ve bir özel karakter içermelidir",
+  "CELEBRITIES": "Ünlüler"
+}

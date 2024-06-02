@@ -12,33 +12,45 @@
     <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#">IMDbPro</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/watch-list">Watchlist</a>
+          <a class="nav-link" href="/watch-list">{{ 'WATCHLIST' | translate }}</a>
         </li>
       </ul>
       <form class="d-flex mx-auto">
         <div class="input-group">
-          <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                  aria-expanded="false">All
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ selectedOption }}
           </button>
           <ul class="dropdown-menu" style="z-index: 1001;">
-            <li><a class="dropdown-item" href="#">All</a></li>
-            <li><a class="dropdown-item" href="#">Titles</a></li>
-            <li><a class="dropdown-item" href="#">TV Episodes</a></li>
-            <li><a class="dropdown-item" href="#">Celebs</a></li>
-            <li><a class="dropdown-item" href="#">Companies</a></li>
-            <li><a class="dropdown-item" href="#">Keywords</a></li>
-            <li><a class="dropdown-item" href="#">Advanced Search</a></li>
+            <li *ngFor="let option of options">
+              <a class="dropdown-item" href="#" (click)="selectOption(option)">{{ option }}</a>
+            </li>
           </ul>
-          <input type="text" class="form-control" placeholder="Search IMDb" aria-label="Search"
+          <input type="text" class="form-control" placeholder="{{'SEARCH_PLACEHOLDER' | translate}}" aria-label="Search"
                  (input)="onSearch($event.target.value)">
         </div>
       </form>
       <ul class="navbar-nav ms-auto">
+
         <li class="nav-item">
-          <a class="nav-link" href="/sign-in">Sign In</a>
+          <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
+            <button
+              type="button"
+              class="btn btn-outline-primary me-2"
+              id="dropdownManual"
+              ngbDropdownAnchor
+              (focus)="myDrop.open()"
+            >
+              {{ 'LANG_BTN' | translate }}
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownManual">
+              <button ngbDropdownItem (click)="switchLanguage('en')">EN</button>
+              <button ngbDropdownItem (click)="switchLanguage('tr')">TR</button>
+            </div>
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/sign-in">{{ 'SIGN_IN' | translate }}</a>
         </li>
       </ul>
     </div>
@@ -48,7 +60,7 @@
   <div *ngIf="movies.length > 0 || tvShows.length > 0 || celebs.length > 0" class="results-container">
     <ul class="list-group" *ngIf="movies.length> 0">
       <div class="d-flex justify-content-center align-items-center ul-title">
-        Movies
+        {{ 'MAIN_MENU_MOVIES_TITLE' | translate }}
       </div>
       <li class="list-group-item" *ngFor="let result of movies" (click)="handleClickMovie(result)">
         <img [src]="result.photos[0].url" alt="{{ result.name }}" class="img-thumbnail mr-2"
@@ -59,7 +71,7 @@
 
     <ul class="list-group" *ngIf="tvShows.length> 0">
       <div class="d-flex justify-content-center align-items-center ul-title">
-        Tv Shows
+        {{ 'MAIN_MENU_TV_SHOWS_TITLE' | translate }}
       </div>
       <li class="list-group-item" *ngFor="let result of tvShows" (click)="handleClickTvShow(result)">
         <img [src]="result.photos[0].url" alt="{{ result.name }}" class="img-thumbnail mr-2"
@@ -71,7 +83,7 @@
     <ul class="list-group" *ngIf="celebs.length> 0">
 
       <div class="d-flex justify-content-center align-items-center ul-title">
-        Celebs
+        {{ 'CELEBRITIES' | translate }}
       </div>
 
       <li class="list-group-item" *ngFor="let result of celebs" (click)="handleClickCelebrity(result)">

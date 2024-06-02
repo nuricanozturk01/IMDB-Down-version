@@ -1,0 +1,22 @@
+{
+  "WATCHLIST": "Watchlist",
+  "MAIN_MENU_MOVIES_TITLE": "Movies",
+  "MAIN_MENU_TV_SHOWS_TITLE": "TV Shows",
+  "MOVIE_TOP_10": "Top 10 Movie IMDB in this week",
+  "TV_SHOW_TOP_10": "Top 10 Tv Show IMDB in this week",
+  "LANG_BTN": "Language",
+  "WATCHLIST_EMPTY": "Watchlist is empty",
+  "SEARCH_PLACEHOLDER": "Search...",
+  "SIGN_IN": "Sign in",
+  "SIGN_UP": "Sign up",
+  "SIGN_OUT": "Sign out",
+  "LOGIN": "Login",
+  "SIGN_IN_GOOGLE": "Sign in with Google",
+  "OR": "or",
+  "FIRST_NAME": "First name",
+  "LAST_NAME": "Last name",
+  "COUNTRY": "Country",
+  "CITY": "City",
+  "PASSWORD_RULES": "at least 8 characters, 1 number and 1 none alphanumeric character",
+  "CELEBRITIES": "Celebrities"
+}

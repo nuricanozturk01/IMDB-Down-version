@@ -3,6 +3,8 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
+	"github.com/gorilla/sessions"
 	"imdb_project/data/dto"
 	"imdb_project/service"
 	"net/http"
@@ -11,6 +13,7 @@ import (
 type UserController struct {
 	UserService service.IUserService
 	Validate    *validator.Validate
+	Store       *sessions.CookieStore
 }
 
 func (c *UserController) SubscribeEndpoints(engine *gin.RouterGroup) {
@@ -20,8 +23,8 @@ func (c *UserController) SubscribeEndpoints(engine *gin.RouterGroup) {
 	engine.GET("/api/v1/user/email", c.FindUserByEmail)
 }
 
-func NewUserController(userService service.IUserService, validator *validator.Validate) *UserController {
-	return &UserController{UserService: userService, Validate: validator}
+func NewUserController(userService service.IUserService, validator *validator.Validate, store *sessions.CookieStore) *UserController {
+	return &UserController{UserService: userService, Validate: validator, Store: store}
 }
 
 func (c *UserController) CreateUser(ctx *gin.Context) {
@@ -45,8 +48,8 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 }
 
 func (c *UserController) FindUserById(ctx *gin.Context) {
-	userID := ctx.Query("id")
-	response := c.UserService.FindUserById(userID)
+	userID := c.getUserID(ctx)
+	response := c.UserService.FindUserById(userID.String())
 	ctx.JSON(int(response.StatusCode), response)
 }
 
@@ -62,3 +65,13 @@ func (c *UserController) FindUserByEmail(ctx *gin.Context) {
 }
 
 // ...
+func (c *UserController) getUserID(ctx *gin.Context) uuid.UUID {
+	session, err := c.Store.Get(ctx.Request, "imdb-session")
+	if err != nil {
+		return uuid.UUID{}
+	}
+
+	userID, _ := session.Values["id"]
+
+	return uuid.MustParse(userID.(string))
+}
