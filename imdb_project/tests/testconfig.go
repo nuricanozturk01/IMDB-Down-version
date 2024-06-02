@@ -28,7 +28,7 @@ func configure() *AppContext {
 	}
 
 	// Service Helper (Facade Pattern) (for Repository Layer)
-	imdbHelper := helper.New(db)
+	imdbHelper := helper.New(db, nil)
 
 	// Service Layer
 	movieService := service.NewMovieService(imdbHelper, nil)

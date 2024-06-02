@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TvShowDTO} from "../../dto/dtos";
 import {ActivatedRoute} from "@angular/router";
-import {SearchService} from "../services/search.service";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {DomSanitizer} from "@angular/platform-browser";
+import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-tv-details',
@@ -12,18 +10,19 @@ import {DomSanitizer} from "@angular/platform-browser";
 })
 export class TvDetailsComponent implements OnInit {
   tvShow: TvShowDTO
+  safeUrl: SafeResourceUrl
 
-  constructor(private route: ActivatedRoute, private service: SearchService, private modal: NgbModal, private sanitizer: DomSanitizer) {
+  constructor(private route: ActivatedRoute, private sanitizer: DomSanitizer) {
 
   }
 
   ngOnInit(): void {
+    this.tvShow = null;
+    this.safeUrl = null;
     this.route.params.subscribe(params => {
       if (params['tvShow']) {
-        this.tvShow = JSON.parse(params['tvShow']);
-        this.tvShow.trailers.forEach(trailer => {
-          trailer.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(trailer.url);
-        })
+        this.tvShow = JSON.parse(atob(params['tvShow']));
+        this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.tvShow.trailers[0].url);
       }
     });
   }

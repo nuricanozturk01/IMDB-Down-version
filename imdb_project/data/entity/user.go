@@ -17,6 +17,8 @@ type User struct {
 	Likes     []Like    `gorm:"foreignKey:UserID"`
 	Photos    []Photo   `json:"photos" gorm:"polymorphic:Media;polymorphicValue:users"`
 	Rates     []Rate    `json:"rates" gorm:"foreignKey:UserID"`
+	City      string    `json:"city" gorm:"not null;varchar(200)"`
+	Country   string    `json:"country" gorm:"not null;varchar(50)"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -28,6 +30,7 @@ func (usr *User) BeforeCreate(tx *gorm.DB) (err error) {
 	}
 	return
 }
+
 func (usr *User) GetID() uuid.UUID {
 	return usr.ID
 }

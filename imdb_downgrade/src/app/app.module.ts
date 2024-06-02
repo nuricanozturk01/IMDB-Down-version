@@ -10,7 +10,7 @@ import {MainPageComponent} from './main-page/main-page.component';
 import {RegisterComponent} from './register/register.component';
 import {DetailsComponent} from './details/details.component';
 import {HttpClientModule} from "@angular/common/http";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {IntroComponent} from './intro/intro.component';
 import {RateComponent} from './rate/rate.component';
 import {MovieCardComponent} from './movie-card/movie-card.component';
@@ -18,6 +18,7 @@ import {WatchListComponent} from './watch-list/watch-list.component';
 import {TvCardComponent} from './tv-card/tv-card.component';
 import {ToastrModule} from "ngx-toastr";
 import { TvDetailsComponent } from './tv-details/tv-details.component';
+import { CelebDetailsComponent } from './celeb-details/celeb-details.component';
 
 @NgModule({
   declarations: [
@@ -32,24 +33,26 @@ import { TvDetailsComponent } from './tv-details/tv-details.component';
     MovieCardComponent,
     WatchListComponent,
     TvCardComponent,
-    TvDetailsComponent
+    TvDetailsComponent,
+    CelebDetailsComponent
   ],
-  imports: [
-    HttpClientModule,
-    BrowserModule,
-    NgbModule,
-    AppRoutingModule,
-    ReactiveFormsModule,
-    NgbRatingModule,
-    ToastrModule.forRoot({
-      timeOut: 3000,
-      closeButton: true,
-      progressBar: true,
-      progressAnimation: 'increasing',
-      preventDuplicates: true,
-      positionClass: 'toast-top-right',
-    }),
-  ],
+    imports: [
+        HttpClientModule,
+        BrowserModule,
+        NgbModule,
+        AppRoutingModule,
+        ReactiveFormsModule,
+        NgbRatingModule,
+        ToastrModule.forRoot({
+            timeOut: 3000,
+            closeButton: true,
+            progressBar: true,
+            progressAnimation: 'increasing',
+            preventDuplicates: true,
+            positionClass: 'toast-top-right',
+        }),
+        FormsModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

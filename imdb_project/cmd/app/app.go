@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/allegro/bigcache/v3"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
@@ -20,6 +21,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 )
 
 var validate *validator.Validate
@@ -43,6 +45,18 @@ func Run() {
 	// HTTP Layer
 	engine := gin.New()
 
+	// Cache Layer
+	cache, err := bigcache.New(context.Background(), bigcache.Config{
+		Shards:             1024,
+		LifeWindow:         24 * time.Hour,
+		CleanWindow:        1 * time.Hour,
+		MaxEntriesInWindow: 1000 * 10 * 60,
+		MaxEntrySize:       500,
+		HardMaxCacheSize:   2048,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
 	// CORS configuration
 	engine.Use(middleware.CorsPolicy())
 
@@ -50,7 +64,7 @@ func Run() {
 	store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 
 	// Service Helper (Facade Pattern) (for Repository Layer)
-	imdbHelper := helper.New(db)
+	imdbHelper := helper.New(db, cache)
 
 	// Service Layer
 	queueService := sqs.NewSQSClient(os.Getenv("QUEUE_URL"))
@@ -60,12 +74,13 @@ func Run() {
 	userService := service.NewUserService(imdbHelper)
 	authenticationService := service.NewAuthenticationService(imdbHelper)
 	celebrityService := service.NewCelebrityService(imdbHelper)
+	informationService := service.NewInformationService(imdbHelper, cache)
 
 	// Middleware Layer and cors settings
 	authMiddleware := middleware.NewAuthMiddleware(store)
 
 	// Controller Layer
-	authController := controller.NewAuthController(authenticationService, validate, store)
+	authController := controller.NewAuthController(authenticationService, informationService, validate, store)
 	userController := controller.NewUserController(userService, validate)
 	movieController := controller.NewMovieController(movieService, validate, store)
 	tvShowController := controller.NewTVShowController(tvShowService, validate, store)
@@ -84,6 +99,7 @@ func Run() {
 	searchController.SubscribeEndpoints(protected)
 
 	go startScheduler(queueService, imdbHelper)
+	go cacheAllCountries(cache, imdbHelper)
 
 	// Run the server
 	err = engine.Run(":5050")
@@ -92,6 +108,25 @@ func Run() {
 		fmt.Printf("Message:%s\n", err.Error())
 	}
 
+}
+
+func cacheAllCountries(cache *bigcache.BigCache, imdbHelper *helper.ImdbHelper) {
+	countries, err := imdbHelper.CountryRepository.FindAll()
+	if err != nil {
+		log.Println("Error while fetching countries:", err)
+		return
+	}
+
+	data, err := json.Marshal(countries)
+	if err != nil {
+		log.Println("Error while marshalling countries:", err)
+		return
+	}
+
+	err = cache.Set("countries", data)
+	if err != nil {
+		log.Println("Error while setting cache:", err)
+	}
 }
 
 func startScheduler(queueService *sqs.QueueService, imdbHelper *helper.ImdbHelper) {

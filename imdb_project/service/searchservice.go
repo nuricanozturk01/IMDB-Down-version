@@ -12,6 +12,7 @@ import (
 
 type ISearchService interface {
 	Search(query string) dto.ResponseDTO[dto.SearchDTO]
+	FindWatchList(id uuid.UUID) dto.ResponseDTO[dto.WatchListDTO]
 }
 
 type SearchService struct {

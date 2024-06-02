@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
@@ -18,6 +19,7 @@ type SearchController struct {
 func (c SearchController) SubscribeEndpoints(engine *gin.RouterGroup) {
 	engine.GET("/api/v1/search", c.Search)
 	engine.GET("/api/v1/celebrity/all", c.FindAllCelebrities)
+	engine.GET("/api/v1/celebrity", c.FindCelebrityByID)
 	engine.GET("/api/v1/watchlist", c.FindWatchList)
 }
 
@@ -52,4 +54,11 @@ func (c SearchController) getUserID(ctx *gin.Context) uuid.UUID {
 	userID, _ := session.Values["id"]
 
 	return uuid.MustParse(userID.(string))
+}
+
+func (c SearchController) FindCelebrityByID(context *gin.Context) {
+	id := context.Query("id")
+	fmt.Println(id)
+	response := c.CelebrityService.FindCelebrityByID(uuid.MustParse(id))
+	context.JSON(int(response.StatusCode), response)
 }

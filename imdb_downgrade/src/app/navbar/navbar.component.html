@@ -38,7 +38,7 @@
       </form>
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" (click)="handleSignInClick()">Sign In</a>
+          <a class="nav-link" href="/sign-in">Sign In</a>
         </li>
       </ul>
     </div>
@@ -50,7 +50,7 @@
       <div class="d-flex justify-content-center align-items-center ul-title">
         Movies
       </div>
-      <li class="list-group-item" *ngFor="let result of movies">
+      <li class="list-group-item" *ngFor="let result of movies" (click)="handleClickMovie(result)">
         <img [src]="result.photos[0].url" alt="{{ result.name }}" class="img-thumbnail mr-2"
              style="width: 50px; height: 50px;">
         {{ result.name }}
@@ -61,7 +61,7 @@
       <div class="d-flex justify-content-center align-items-center ul-title">
         Tv Shows
       </div>
-      <li class="list-group-item" *ngFor="let result of tvShows">
+      <li class="list-group-item" *ngFor="let result of tvShows" (click)="handleClickTvShow(result)">
         <img [src]="result.photos[0].url" alt="{{ result.name }}" class="img-thumbnail mr-2"
              style="width: 50px; height: 50px;">
         {{ result.name }}
@@ -74,7 +74,7 @@
         Celebs
       </div>
 
-      <li class="list-group-item" *ngFor="let result of celebs">
+      <li class="list-group-item" *ngFor="let result of celebs" (click)="handleClickCelebrity(result)">
         <img [src]="result.photos[0].url" alt="{{ result.name }}" class="img-thumbnail mr-2"
              style="width: 50px; height: 50px;">
         {{ result.name }}

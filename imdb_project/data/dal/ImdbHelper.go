@@ -1,6 +1,8 @@
 package dal
 
 import (
+	"encoding/json"
+	"github.com/allegro/bigcache/v3"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"imdb_project/data/dto"
@@ -95,8 +97,22 @@ func (serviceHelper *ServiceHelper) FindTvShowByID(id uuid.UUID) *entity.TVShow 
 }
 
 func (serviceHelper *ServiceHelper) FindCelebrityByID(id uuid.UUID) *entity.Celebrity {
-	celebrity, err := serviceHelper.CelebrityRepository.FindByID(id)
+	celebrity, err := serviceHelper.CelebrityRepository.FindByIdEager(id, []string{"Movies", "TVShows", "Photos"})
+	var movies []entity.Movie
+	var tvShows []entity.TVShow
 
+	for _, celeb := range celebrity.Movies {
+		movie := serviceHelper.FindMovieByID(celeb.ID)
+		movies = append(movies, *movie)
+	}
+
+	for _, celeb := range celebrity.TVShows {
+		tvShow := serviceHelper.FindTvShowByID(celeb.ID)
+		tvShows = append(tvShows, *tvShow)
+	}
+
+	celebrity.Movies = movies
+	celebrity.TVShows = tvShows
 	if err != nil {
 		log.Println("Failed to find celebrity:", err)
 		return nil
@@ -246,6 +262,76 @@ func (serviceHelper *ServiceHelper) FindWatchListByUserID(id uuid.UUID) *entity.
 	}, []string{"Items"})
 
 	return watchList
+}
+
+func (serviceHelper *ServiceHelper) FindAllCountries() []entity.Country {
+	// Check if countries are in cache
+	countriesBytes, err := serviceHelper.Cache.Get("countries")
+	if err == nil {
+		var countries []entity.Country
+		err = json.Unmarshal(countriesBytes, &countries)
+		if err != nil {
+			log.Println("Failed to unmarshal countries from cache:", err)
+			return nil
+		}
+		return countries
+	}
+
+	// If countries are not in cache, fetch from database
+	countries, err := serviceHelper.CountryRepository.FindAll()
+	if err != nil {
+		log.Println("Failed to find countries:", err)
+		return nil
+	}
+
+	// Cache the countries
+	countriesBytes, err = json.Marshal(countries)
+	if err != nil {
+		log.Println("Failed to marshal countries for cache:", err)
+		return countries
+	}
+	err = serviceHelper.Cache.Set("countries", countriesBytes)
+	if err != nil {
+		log.Println("Failed to set countries in cache:", err)
+	}
+
+	return countries
+}
+
+func (serviceHelper *ServiceHelper) FindCitiesByCountry(country string) []entity.City {
+	// check if country is in cache
+	citiesBytes, err := serviceHelper.Cache.Get(country)
+	if err == nil {
+		var cities []entity.City
+		err = json.Unmarshal(citiesBytes, &cities)
+		if err != nil {
+			log.Println("Failed to unmarshal cities from cache:", err)
+			return nil
+		}
+		return cities
+	}
+
+	// If country is not in cache, fetch from database
+	countryObj, _ := serviceHelper.CountryRepository.FindOneByFilterEager(func(db *gorm.DB) *gorm.DB {
+		return db.Where("country_name = ?", country)
+	}, []string{"Cities"})
+
+	go cacheCountryAndCities(countryObj, serviceHelper.Cache)
+
+	return countryObj.Cities
+}
+
+func cacheCountryAndCities(obj *entity.Country, cache *bigcache.BigCache) {
+	data, err := json.Marshal(obj.Cities)
+	if err != nil {
+		log.Println("Error while marshalling countries:", err)
+		return
+	}
+	err = cache.Set(obj.CountryName, data)
+
+	if err != nil {
+		log.Println("Error while setting cache:", err)
+	}
 }
 
 //...

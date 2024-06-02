@@ -4,6 +4,7 @@
     <inspection_tool class="GoDfaErrorMayBeNotNil" enabled="true" level="WARNING" enabled_by_default="true">
       <methods>
         <method importPath="imdb_project/data/repository" receiver="IGenericRepository" name="FindOneByFilterEager" />
+        <method importPath="imdb_project/data/repository" receiver="IGenericRepository" name="FindByIdEager" />
       </methods>
     </inspection_tool>
   </profile>

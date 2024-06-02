@@ -33,12 +33,9 @@ export class MainPageComponent implements OnInit {
     });
 
     this.service.findAllTvShows().subscribe((response: TvShowDTO[]) => {
-      console.log("TVR: ", response);
       this.tvShows = response;
       this.tvShowSlides = this.chunkArray(this.tvShows, 4);
     });
-
-    console.log("TV: ", this.tvShows);
   }
 
   private chunkArray(myArray, chunk_size) {
@@ -52,13 +49,13 @@ export class MainPageComponent implements OnInit {
 
   clickMovieItem(movie: MovieDTO) {
     this.service.findMovieDetails(movie.id).subscribe((response: MovieDTO) => {
-      this.route.navigate(['/details', {movie: JSON.stringify(response)}]);
+      this.route.navigate(['/details', {movie: btoa(JSON.stringify(response))}]);
     });
   }
 
   clickTvItem(movie: TvShowDTO) {
     this.service.findTvShowDetails(movie.id).subscribe((response: MovieDTO) => {
-      this.route.navigate(['/tv-details', {tvShow: JSON.stringify(response)}]);
+      this.route.navigate(['/tv-details', {tvShow: btoa(JSON.stringify(response))}]);
     });
   }
 

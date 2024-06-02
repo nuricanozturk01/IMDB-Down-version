@@ -28,11 +28,6 @@ func findByEmailCallback(email string) func(*gorm.DB) *gorm.DB {
 	}
 }
 
-func findByUsernameCallback(username string) func(*gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		return db.Where("username = ?", username)
-	}
-}
 func (serviceHelper *ServiceHelper) findWatchListItem(watchList *entity.WatchList, mediaID uuid.UUID, mediaType string) (*entity.WatchListItem, error) {
 	switch mediaType {
 	case enum.MovieType:

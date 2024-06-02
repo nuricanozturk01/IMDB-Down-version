@@ -38,6 +38,17 @@ type MovieService struct {
 	QueueService  *sqs.QueueService
 }
 
+func (service *MovieService) saveSQSMessage(movieId string) {
+	msg := GenericMessage{Message: "Movie fetched successfully", Id: movieId, Type: enum.MovieType}
+	messageBody, _ := json.Marshal(msg)
+
+	err := service.QueueService.SendMessage(context.Background(), string(messageBody))
+
+	if err != nil {
+		fmt.Println("Failed to send message to SQS", err.Error())
+	}
+}
+
 func NewMovieService(serviceHelper *dal.ImdbHelper, queueService *sqs.QueueService) *MovieService {
 	return &MovieService{ServiceHelper: serviceHelper, QueueService: queueService}
 }
@@ -83,16 +94,7 @@ func (service *MovieService) FindAllMovies() dto.ResponseDTO[[]dto.MovieDTO] {
 
 	return dto.ResponseDTO[[]dto.MovieDTO]{Message: "Movies fetched successfully", StatusCode: http.StatusOK, Data: &moviesDTO}
 }
-func (service *MovieService) saveSQSMessage(movieId string) {
-	msg := GenericMessage{Message: "Movie fetched successfully", Id: movieId, Type: enum.MovieType}
-	messageBody, _ := json.Marshal(msg)
 
-	err := service.QueueService.SendMessage(context.Background(), string(messageBody))
-
-	if err != nil {
-		fmt.Println("Failed to send message to SQS", err.Error())
-	}
-}
 func (service *MovieService) FindMovieById(movieId uuid.UUID) dto.ResponseDTO[dto.MovieDTO] {
 	movie := service.ServiceHelper.FindMovieByID(movieId)
 

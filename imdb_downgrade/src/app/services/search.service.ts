@@ -9,6 +9,7 @@ import {
   REMOVE_WATCH_LIST_TV,
   REQUEST_ALL_MOVIES,
   REQUEST_ALL_TV_SHOW,
+  REQUEST_CELEBRITY_DETAILS,
   REQUEST_MOVIE_DETAILS,
   REQUEST_RATE_MOVIE,
   REQUEST_RATE_TV_SHOW,
@@ -16,7 +17,18 @@ import {
   REQUEST_TV_SHOW_DETAILS,
   REQUEST_WATCH_LIST
 } from "./connection";
-import {Celebrity, Company, Like, MovieDTO, Photo, SearchDTO, Trailer, TvShowDTO, WatchListDTO} from "../../dto/dtos";
+import {
+  Celebrity,
+  CelebrityDTO,
+  Company,
+  Like,
+  MovieDTO,
+  Photo,
+  SearchDTO,
+  Trailer,
+  TvShowDTO,
+  WatchListDTO
+} from "../../dto/dtos";
 
 @Injectable({
   providedIn: 'root'
@@ -308,6 +320,21 @@ export class SearchService {
       }),
       catchError((error: any) => {
           return ["Already rated!"]
+        }
+      ));
+  }
+
+
+  findCelebrityById(id: string): Observable<CelebrityDTO> {
+    return this.http.get(REQUEST_CELEBRITY_DETAILS(id), {withCredentials: true}).pipe(
+      map((response: any) => {
+        if (response.status_code === 200) {
+          console.log("RESPONSE: ", response)
+          return response.data;
+        }
+      }),
+      catchError((error: any) => {
+          return null
         }
       ));
   }

@@ -19,14 +19,15 @@ import (
 
 type AuthController struct {
 	AuthenticationService *service.AuthenticationService
+	InformationService    *service.InformationService
 	Validate              *validator.Validate
 	Store                 *sessions.CookieStore
 }
 
 var googleOauthConfig *oauth2.Config
 
-func NewAuthController(authService *service.AuthenticationService, validator *validator.Validate, store *sessions.CookieStore) *AuthController {
-	return &AuthController{AuthenticationService: authService, Validate: validator, Store: store}
+func NewAuthController(authService *service.AuthenticationService, informationService *service.InformationService, validator *validator.Validate, store *sessions.CookieStore) *AuthController {
+	return &AuthController{AuthenticationService: authService, InformationService: informationService, Validate: validator, Store: store}
 }
 
 func (controller *AuthController) SubscribeEndpoints(engine *gin.Engine) {
@@ -34,6 +35,8 @@ func (controller *AuthController) SubscribeEndpoints(engine *gin.Engine) {
 	engine.POST("/api/auth/register", controller.Register)
 	engine.GET("/api/auth/google/login", controller.GoogleLogin)
 	engine.GET("/api/auth/google/callback", controller.GoogleCallback)
+	engine.GET("/api/countries/all", controller.FindAllCountries)
+	engine.GET("/api/city/by-country", controller.FindCitiesByCountry)
 }
 
 func init() {
@@ -196,4 +199,13 @@ func (controller *AuthController) Logout(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
+}
+
+func (controller *AuthController) FindAllCountries(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"countries": controller.InformationService.FindAllCountries()})
+}
+
+func (controller *AuthController) FindCitiesByCountry(c *gin.Context) {
+	country := c.Query("country")
+	c.JSON(http.StatusOK, gin.H{"cities": controller.InformationService.FindCitiesByCountry(country)})
 }

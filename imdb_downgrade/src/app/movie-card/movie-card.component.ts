@@ -17,15 +17,13 @@ export class MovieCardComponent {
 
   clickRemoveFromWatchList(movie: MovieDTO) {
     this.searchService.removeOnWatchList(movie.id).subscribe((response: string) => {
-      console.log(response);
       this.removeFromWatchList.emit(movie);
     });
   }
 
   clickDetails(movie: MovieDTO) {
     this.searchService.findMovieDetails(movie.id).subscribe((response: MovieDTO) => {
-      console.log("DTO: ", response);
-      this.route.navigate(['/details', {movie: JSON.stringify(response)}]);
+      this.route.navigate(['/details', {movie: btoa(JSON.stringify(response))}]);
     });
 
   }

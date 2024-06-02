@@ -21,6 +21,7 @@ func InitDb() (*gorm.DB, error) {
 		log.Fatal("Failed to connect to database:", err)
 	}
 
+	// Diğer tabloları oluşturma
 	err = db.AutoMigrate(
 		&entity.User{},
 		&entity.Rate{},
@@ -33,8 +34,9 @@ func InitDb() (*gorm.DB, error) {
 		&entity.TVShow{},
 		&entity.WatchList{},
 		&entity.WatchListItem{},
+		&entity.Country{},
+		&entity.City{},
 	)
-
 	if err != nil {
 		log.Println("Failed to migrate database:", err)
 		return nil, err

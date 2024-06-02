@@ -33,7 +33,7 @@
     </div>
     <div class="col-md-7">
       <div class="embed-responsive embed-responsive-16by9 mb-3">
-        <iframe *ngIf="movie && movie.trailers.length > 0" width="300" height="300" [src]="movie.trailers[0].safeUrl"
+        <iframe *ngIf="movie && movie.trailers.length > 0" width="300" height="300" [src]="safeUrl"
                 frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen></iframe>

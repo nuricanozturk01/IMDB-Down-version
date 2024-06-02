@@ -23,7 +23,7 @@ export class TvCardComponent {
 
   clickShowDetailsTvShow(tvShow: TvShowDTO) {
     this.searchService.findTvShowDetails(tvShow.id).subscribe((response: TvShowDTO) => {
-      this.route.navigate(['/tv-details', {tvShow: JSON.stringify(response)}]);
+      this.route.navigate(['/tv-details', {tvShow: btoa(JSON.stringify(response))}]);
     });
   }
 }

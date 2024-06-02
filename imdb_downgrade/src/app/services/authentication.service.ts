@@ -15,9 +15,7 @@ export class AuthenticationService {
   loginWithGoogle() {
     window.location.href = 'http://localhost:5050/api/auth/google/login';
   }
-  getSession() {
-    return this.http.get('http://localhost:5050/session', {withCredentials: true});
-  }
+
 
   login(loginModel: LoginDTO): Observable<any> {
     return this.http.post('http://localhost:5050/api/v1/auth/login', loginModel).pipe(

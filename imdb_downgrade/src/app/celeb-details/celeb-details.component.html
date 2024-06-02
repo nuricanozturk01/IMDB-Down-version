@@ -1,0 +1,62 @@
+<app-navbar></app-navbar>
+<body class="vh-100">
+<nav style="margin-top: 10px" class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div>
+    <a class="navbar-brand" style="font-size: 1.7rem;">{{ celebrity.name }}</a>
+  </div>
+</nav>
+<div class="container mt-3" style="padding: .3rem">
+  <div class="row">
+    <div class="col-md-3">
+      <img
+        src="{{celebrity.photos[0].url}}"
+        class="img-fluid" alt="Fringe Poster" width="300" height="400">
+    </div>
+    <div class="col-md-7">
+      <div class="embed-responsive embed-responsive-16by9 mb-3">
+        <iframe *ngIf="movieSafeUrlIfExists" width="300" height="300" [src]="movieSafeUrlIfExists"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+
+        <iframe *ngIf="tvShowSafeUrlIfExists" width="300" height="300" [src]="tvShowSafeUrlIfExists"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+      </div>
+
+    </div>
+
+    <div class="col-md-2">
+      <div class="col d-flex flex-column justify-content-center">
+        <button class="btn btn-dark mb-2" style="height: 200px;">
+          <i class="bi bi-play-circle"></i> 1 VIDEOS
+        </button>
+        <button class="btn btn-dark mb-2" style="height: 200px;">
+          <i class="bi bi-images"></i> 1 PHOTOS
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <div>
+      <span class="badge badge-light">Drama</span>
+      <span class="badge badge-light">Mystery</span>
+      <span class="badge badge-light">Sci-Fi</span>
+    </div>
+  </div>
+
+  <p class="mt-3" *ngIf="movies && movies.length > 0">
+    <strong>Movies: </strong>
+    <span class="badge badge-danger" *ngFor="let movie of movies">{{ movie.name }}</span>
+  </p>
+
+  <p class="mt-3" *ngIf="tvShows && tvShows.length > 0">
+    <strong>Tv Shows </strong>
+    <span class="badge badge-danger" *ngFor="let tv of tvShows">{{ tv.name }}</span>
+  </p>
+</div>
+
+</body>

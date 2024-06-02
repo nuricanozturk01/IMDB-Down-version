@@ -27,6 +27,7 @@ type GenericRepository[T, R any] struct {
 func NewGenericRepository[T, R any](db *gorm.DB) IGenericRepository[T, R] {
 	return &GenericRepository[T, R]{Db: db}
 }
+
 func (repository *GenericRepository[T, R]) FindAll() ([]T, error) {
 	var entities []T
 	if err := repository.Db.Find(&entities).Error; err != nil {
