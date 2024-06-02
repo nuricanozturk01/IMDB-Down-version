@@ -80,3 +80,7 @@ Create a slimmed down version of IMDB web application that will have following u
 ## Database Schema
 
 <img src="/images/db.png" width="100%">
+
+## Unit Tests
+
+<img src="/images/tests.png" width="100%">
