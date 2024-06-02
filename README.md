@@ -83,4 +83,4 @@ Create a slimmed down version of IMDB web application that will have following u
 
 ## Unit Tests
 
-<img src="/images/tests.png" width="100%">
+<img src="/images/tests.png" width="75%">
