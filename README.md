@@ -84,3 +84,27 @@ Create a slimmed down version of IMDB web application that will have following u
 ## Unit Tests
 
 <img src="/images/tests.png" width="75%">
+
+## Example '.env' File
+
+```shell
+DB_DSN="YOUR_DB"
+TEST_DB_DSN="YOUR_TEST_DB"
+
+
+# OAuth 2
+CLIENT_ID="GOOGLE_CLIENT_ID"
+CLIENT_KEY="GOOGLE_CLIENT_KEY"
+REDIRECT_URL="http://localhost:5050/api/auth/google/callback"
+
+# SESSION
+SESSION_SECRET="SESSION_SECRET"
+
+#SQS
+QUEUE_URL="AMAZON_SQS_URL"
+AWS_ACCESS_KEY_ID="AWS_ACCESS_KEY_ID"
+AWS_SECRET_ACCESS_KEY="AWS_SECRET_ACCESS_KEY"
+
+# QUEUE TIME MINUTE
+QUEUE_TIME=30
+```
