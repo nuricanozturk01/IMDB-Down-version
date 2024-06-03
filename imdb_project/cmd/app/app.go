@@ -43,7 +43,7 @@ func Run() {
 	}
 
 	// HTTP Layer
-	engine := gin.New()
+	engine := gin.Default()
 
 	// Cache Layer
 	cache, err := bigcache.New(context.Background(), bigcache.Config{
@@ -77,7 +77,14 @@ func Run() {
 	informationService := service.NewInformationService(imdbHelper, cache)
 
 	// Middleware Layer and cors settings
-	authMiddleware := middleware.NewAuthMiddleware(store)
+	//authMiddleware := middleware.NewAuthMiddleware(store)
+
+	// Public routes group
+	public := engine.Group("/api/v1/public")
+
+	// Private routes group
+	private := engine.Group("/api/v1/private")
+	//private.Use(authMiddleware.Middleware())
 
 	// Controller Layer
 	authController := controller.NewAuthController(authenticationService, informationService, validate, store)
@@ -87,16 +94,13 @@ func Run() {
 	searchController := controller.NewSearchController(searchService, celebrityService, validate, store)
 
 	// Public routes
-	authController.SubscribeEndpoints(engine)
-	engine.Use(authMiddleware.Middleware())
+	authController.SubscribeEndpoints(public)
 
-	// Protected routes
-	protected := engine.Group("/")
-	// Protected routes subscription (session logic)
-	userController.SubscribeEndpoints(protected)
-	movieController.SubscribeEndpoints(protected)
-	tvShowController.SubscribeEndpoints(protected)
-	searchController.SubscribeEndpoints(protected)
+	// Private routes subscription (session logic)
+	userController.SubscribeEndpoints(private)
+	movieController.SubscribeEndpoints(public, private)
+	tvShowController.SubscribeEndpoints(public, private)
+	searchController.SubscribeEndpoints(public, private)
 
 	go startScheduler(queueService, imdbHelper)
 	go cacheAllCountries(cache, imdbHelper)

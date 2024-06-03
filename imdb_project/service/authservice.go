@@ -8,8 +8,9 @@ import (
 )
 
 type IAuthenticationService interface {
-	Login(email string, password string) dto.ResponseDTO[dto.AuthResponseDTO]
-	Register(registerDTO dto.UserCreateDTO) dto.ResponseDTO[dto.AuthResponseDTO]
+	Login(email string, password string) dto.ResponseDTO[dto.UserDTO]
+	Register(registerDTO *dto.UserCreateDTO) dto.ResponseDTO[dto.UserDTO]
+	LoginOAuth2(googleDTO *dto.GoogleUserDTO) dto.ResponseDTO[dto.UserDTO]
 }
 
 type AuthenticationService struct {
@@ -32,6 +33,7 @@ func (service *AuthenticationService) Login(email string, password string) dto.R
 	if !util.CheckPasswordHash(password, user.Password) {
 		return dto.ResponseDTO[dto.UserDTO]{StatusCode: 401, Data: nil}
 	}
+
 	userDTO := mapper.UserToUserDTO(user)
 	return dto.ResponseDTO[dto.UserDTO]{Message: "Success!", StatusCode: 200, Data: &userDTO}
 }

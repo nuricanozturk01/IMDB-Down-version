@@ -18,15 +18,17 @@ type MovieController struct {
 	Store        *sessions.CookieStore
 }
 
-func (c *MovieController) SubscribeEndpoints(engine *gin.RouterGroup) {
-	engine.POST("/api/v1/movie/create", c.CreateMovie)
-	engine.POST("/api/v1/movie/like", c.LikeMovie)
-	engine.POST("/api/v1/movie/dislike", c.DislikeMovie)
-	engine.POST("/api/v1/movie/watchlist/add", c.AddMovieToWatchList)
-	engine.POST("/api/v1/movie/rate", c.RateMovie)
-	engine.GET("/api/v1/movie/all", c.FindAllMovies)
-	engine.GET("/api/v1/movie", c.FindMovieById)
-	engine.DELETE("/api/v1/movie/watchlist/delete", c.RemoveMovieFromWatchList)
+func (c *MovieController) SubscribeEndpoints(engine *gin.RouterGroup, protected *gin.RouterGroup) {
+	// public
+	engine.GET("/movie/all", c.FindAllMovies)
+	engine.GET("/movie", c.FindMovieById)
+	// protected
+	protected.POST("/movie/create", c.CreateMovie)
+	protected.POST("/movie/like", c.LikeMovie)
+	protected.POST("/movie/dislike", c.DislikeMovie)
+	protected.POST("/movie/watchlist/add", c.AddMovieToWatchList)
+	protected.POST("/movie/rate", c.RateMovie)
+	protected.DELETE("/movie/watchlist/delete", c.RemoveMovieFromWatchList)
 }
 
 func NewMovieController(movieService service.IMovieService, validator *validator.Validate, store *sessions.CookieStore) *MovieController {
@@ -88,6 +90,7 @@ func (c *MovieController) FindMovieById(ctx *gin.Context) {
 }
 
 func (c *MovieController) AddMovieToWatchList(ctx *gin.Context) {
+	fmt.Println("AddMovieToWatchList")
 	session, err := c.Store.Get(ctx.Request, "imdb-session")
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get session: " + err.Error()})
@@ -102,7 +105,8 @@ func (c *MovieController) AddMovieToWatchList(ctx *gin.Context) {
 
 	movieId, _ := uuid.Parse(ctx.Query("movie_id"))
 	userIdUUID := uuid.MustParse(userID.(string))
-
+	fmt.Println("MOVIE ID: ", movieId)
+	fmt.Println("USER ID: ", userIdUUID)
 	response := c.MovieService.AddMovieToWatchList(userIdUUID, movieId)
 	ctx.JSON(int(response.StatusCode), response)
 }

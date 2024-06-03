@@ -29,7 +29,6 @@ export class RateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     this.ctrl.valueChanges.subscribe(value => {
       if (value !== null) {
         this.rateMedia(value);

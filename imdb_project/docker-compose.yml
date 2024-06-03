@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "5050:5050"
+    environment:
+      - SESSION_SECRET=your_session_secret
+      - QUEUE_URL=your_queue_url
+      - DATABASE_URL=mysql://user:password@tcp(db:3306)/imdb_project
+      - QUEUE_TIME=your_queue_time
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: imdb_project
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

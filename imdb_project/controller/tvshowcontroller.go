@@ -21,15 +21,19 @@ func NewTVShowController(tvShowService *service.TvShowService, validator *valida
 	return &TVShowController{TvShowService: tvShowService, Validate: validator, Store: store}
 }
 
-func (c *TVShowController) SubscribeEndpoints(engine *gin.RouterGroup) {
-	engine.POST("/api/v1/tv_show/create", c.CreateTvShow)
-	engine.POST("/api/v1/tv_show/like", c.LikeTvShow)
-	engine.POST("/api/v1/tv_show/dislike", c.DislikeTvShow)
-	engine.POST("/api/v1/tv_show/watchlist", c.AddTvShowToWatchList)
-	engine.POST("/api/v1/tv_show/rate", c.RateTvShow)
-	engine.GET("/api/v1/tv_show/all", c.FindAllTvShows)
-	engine.GET("/api/v1/tv_show", c.FindTvShowById)
-	engine.DELETE("/api/v1/tv_show/watchlist", c.RemoveTvShowFromWatchList)
+func (c *TVShowController) SubscribeEndpoints(engine *gin.RouterGroup, protected *gin.RouterGroup) {
+
+	// public
+	engine.GET("/tv_show/all", c.FindAllTvShows)
+	engine.GET("/tv_show", c.FindTvShowById)
+
+	// protected
+	protected.POST("/tv_show/create", c.CreateTvShow)
+	protected.POST("/tv_show/like", c.LikeTvShow)
+	protected.POST("/tv_show/dislike", c.DislikeTvShow)
+	protected.POST("/tv_show/watchlist", c.AddTvShowToWatchList)
+	protected.POST("/tv_show/rate", c.RateTvShow)
+	protected.DELETE("/tv_show/watchlist", c.RemoveTvShowFromWatchList)
 }
 
 func (c *TVShowController) CreateTvShow(context *gin.Context) {

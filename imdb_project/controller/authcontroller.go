@@ -31,14 +31,15 @@ func NewAuthController(authService *service.AuthenticationService, informationSe
 	return &AuthController{AuthenticationService: authService, InformationService: informationService, Validate: validator, Store: store}
 }
 
-func (controller *AuthController) SubscribeEndpoints(engine *gin.Engine) {
-	engine.POST("/api/auth/login", controller.Login)
-	engine.POST("/api/auth/register", controller.Register)
-	engine.POST("/api/auth/logout", controller.Logout)
-	engine.GET("/api/auth/google/login", controller.GoogleLogin)
-	engine.GET("/api/auth/google/callback", controller.GoogleCallback)
-	engine.GET("/api/countries/all", controller.FindAllCountries)
-	engine.GET("/api/city/by-country", controller.FindCitiesByCountry)
+func (controller *AuthController) SubscribeEndpoints(engine *gin.RouterGroup) {
+	engine.POST("/auth/login", controller.Login)
+	engine.POST("/auth/register", controller.Register)
+	engine.POST("/auth/logout", controller.Logout)
+	engine.GET("/auth/user", controller.getUserID)
+	engine.GET("/auth/google/login", controller.GoogleLogin)
+	engine.GET("/auth/google/callback", controller.GoogleCallback)
+	engine.GET("/countries/all", controller.FindAllCountries)
+	engine.GET("/city/by-country", controller.FindCitiesByCountry)
 }
 
 func init() {
@@ -126,7 +127,8 @@ func (controller *AuthController) GoogleCallback(ctx *gin.Context) {
 			return
 		}
 
-		ctx.Redirect(http.StatusTemporaryRedirect, "http://localhost:4200")
+		/*ctx.JSON(int(result.StatusCode), result)*/
+		ctx.Redirect(http.StatusTemporaryRedirect, os.Getenv("MAIN_PAGE"))
 	} else {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to log in with OAuth2"})
 	}
@@ -209,6 +211,24 @@ func (controller *AuthController) Logout(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
+}
+
+func (controller *AuthController) getUserID(ctx *gin.Context) {
+	session, err := controller.Store.Get(ctx.Request, "imdb-session")
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get session: " + err.Error()})
+		return
+	}
+
+	userID, _ := session.Values["id"]
+	email := session.Values["user"]
+
+	authDTO := dto.AuthResponseDTO{
+		UserID: userID.(string),
+		Email:  email.(string),
+	}
+
+	ctx.JSON(http.StatusOK, authDTO)
 }
 
 func (controller *AuthController) FindAllCountries(c *gin.Context) {

@@ -19,5 +19,12 @@
   "CITY": "City",
   "PASSWORD_RULES": "at least 8 characters, 1 number and 1 none alphanumeric character",
   "CELEBRITIES": "Celebrities",
-  "LOGOUT": "Logout"
+  "LOGOUT": "Logout",
+  "OPTIONS": {
+    "ALL": "All",
+    "TITLES": "Titles",
+    "TV_EPISODES": "TV Episodes",
+    "CELEBS": "Celebs",
+    "COMPANIES": "Companies"
+  }
 }

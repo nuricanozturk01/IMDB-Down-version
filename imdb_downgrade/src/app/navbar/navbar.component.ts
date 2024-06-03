@@ -4,7 +4,11 @@ import {SearchService} from "../services/search.service";
 import {CelebrityDTO, MovieDTO, SearchDTO, TvShowDTO} from "../../dto/dtos";
 import {TranslateService} from "@ngx-translate/core";
 import {AuthenticationService} from "../services/authentication.service";
+import {MessageService} from "../services/message.service";
 
+export const isLoggedIn = () => {
+  return localStorage.getItem('email') !== null;
+}
 
 @Component({
   selector: 'app-navbar',
@@ -17,19 +21,34 @@ export class NavbarComponent {
   tvShows: TvShowDTO[] = [];
   celebs: CelebrityDTO[] = [];
   selectedOption: string = 'All';
-  options: string[] = ['All', 'Titles', 'TV Episodes', 'Celebs', 'Companies'];
-
+  options: string[] = [];
 
   constructor(private translate: TranslateService, private router: Router, private service: SearchService,
-              private authService: AuthenticationService) {
+              private authService: AuthenticationService, private messageService: MessageService) {
     translate.addLangs(['en', 'tr']);
     translate.setDefaultLang('en');
 
     const savedLang = localStorage.getItem('language');
     const browserLang = savedLang || translate.getBrowserLang();
     translate.use(browserLang.match(/en|tr/) ? browserLang : 'en');
+    this.translate.get('OPTIONS').subscribe(value => {
+      this.options = [
+        value['ALL'],
+        value['TITLES'],
+        value['TV_EPISODES'],
+        value['CELEBS']
+      ]
+    })
   }
 
+
+  getEmail() {
+    try {
+      return localStorage.getItem('email').substring(0, localStorage.getItem('email').indexOf('@'));
+    } catch (e) {
+      return '';
+    }
+  }
 
   switchLanguage(language: string) {
     this.translate.use(language);
@@ -38,6 +57,7 @@ export class NavbarComponent {
 
   selectOption(option: string) {
     this.selectedOption = option;
+    console.log(this.selectedOption);
   }
 
 
@@ -57,21 +77,21 @@ export class NavbarComponent {
         }
       });
 
-      if (this.selectedOption === 'Titles') {
-        this.celebs = [];
-      }
 
-      if (this.selectedOption === 'TV Episodes') {
+      if (this.selectedOption === 'Titles' || this.selectedOption === 'Başlıklar') {// Movies
+        this.celebs = [];
+        this.tvShows = [];
+      } else if (this.selectedOption === 'TV Episodes' || this.selectedOption === 'TV Bölümleri') { // TV Shows
         this.movies = [];
         this.celebs = [];
-      }
-
-      if (this.selectedOption === 'Celebs') {
+      } else if (this.selectedOption === 'Celebs' || this.selectedOption === 'Ünlüler') { // Celebs
+        console.log('Celebs');
         this.movies = [];
         this.tvShows = [];
       }
 
     } else {
+      console.log('Query length must be greater than 2');
       this.isFoundResults = false;
       this.movies = [];
       this.tvShows = [];
@@ -80,7 +100,6 @@ export class NavbarComponent {
   }
 
   handleClickCelebrity(celebrity: CelebrityDTO) {
-    //localStorage.setItem("celebrity_id", celebrity.id);
     this.isFoundResults = false;
     this.movies = [];
     this.tvShows = [];
@@ -110,8 +129,21 @@ export class NavbarComponent {
 
   logout() {
     this.router.navigate(['/sign-in']).then(() => {
-        this.authService.logout().subscribe();
+        this.authService.logout().subscribe((response: boolean) => {
+          this.messageService.showSuccess("Logout", "Logout successful!")
+        })
       }
     );
+  }
+
+  protected readonly isLoggedIn = isLoggedIn;
+
+  handleClickWatchList() {
+    if (isLoggedIn()) {
+      this.router.navigate(['/watch-list']);
+    } else {
+      this.messageService.showWarning("Error", "You must be logged in to see your watchlist!");
+      this.router.navigate(['/sign-in']);
+    }
   }
 }

@@ -4,7 +4,6 @@ import {catchError, map, Observable} from "rxjs";
 import {
   ADD_WATCH_LIST_MOVIE,
   ADD_WATCH_LIST_TV,
-  LIKE_MOVIE,
   REMOVE_WATCH_LIST_MOVIE,
   REMOVE_WATCH_LIST_TV,
   REQUEST_ALL_COUNTRIES,
@@ -43,7 +42,6 @@ export class SearchService {
   constructor(private http: HttpClient) {
   }
 
-
   search(keyword: string): Observable<SearchDTO> {
     return this.http.get(REQUEST_SEARCH(keyword), {withCredentials: true})
       .pipe(map((response: any) => {
@@ -64,7 +62,7 @@ export class SearchService {
   }
 
   findAllMovies(): Observable<MovieDTO[]> {
-    return this.http.get(REQUEST_ALL_MOVIES, {withCredentials: true})
+    return this.http.get(REQUEST_ALL_MOVIES)
       .pipe(map((response: any) => {
           if (response.status_code === 200) {
             return response.data.map((movie: any) => {
@@ -142,6 +140,7 @@ export class SearchService {
     }
     return this.http.post(url, {}, {withCredentials: true}).pipe(
       map((response: any) => {
+        console.log("ADD: ", response)
         if (response.status_code === 200) {
           return response.message;
         }
@@ -149,11 +148,11 @@ export class SearchService {
         return response.message;
       }),
       catchError((error: any) => {
+          console.log("ERROR: ", error)
           return ["Already added to watch list!"]
         }
       ));
   }
-
 
   removeOnWatchList(id: string, type: string = "movie"): Observable<string> {
     let url = REMOVE_WATCH_LIST_MOVIE(id)
@@ -173,22 +172,8 @@ export class SearchService {
       ));
   }
 
-  likeMovie(movie_id: string) {
-    return this.http.post(LIKE_MOVIE(movie_id), {}, {withCredentials: true}).pipe(
-      map((response: any) => {
-        if (response.status_code === 200) {
-          return response.message;
-        }
-      }),
-      catchError((error: any) => {
-          return ["Already liked!"]
-        }
-      ));
-  }
-
-
   findMovieDetails(id: string): Observable<MovieDTO> {
-    return this.http.get(REQUEST_MOVIE_DETAILS(id), {withCredentials: true}).pipe(
+    return this.http.get(REQUEST_MOVIE_DETAILS(id)).pipe(
       map((response: any) => {
         if (response.status_code === 200) {
           return response.data;
@@ -329,7 +314,6 @@ export class SearchService {
       ));
   }
 
-
   findCelebrityById(id: string): Observable<CelebrityDTO> {
     return this.http.get(REQUEST_CELEBRITY_DETAILS(id), {withCredentials: true}).pipe(
       map((response: any) => {
@@ -367,11 +351,11 @@ export class SearchService {
       ));
   }
 
-  getUserInfo() : Observable<any> {
+  getUserInfo(): Observable<any> {
     return this.http.get(REQUEST_USER_INFO, {withCredentials: true}).pipe(
       map((response: any) => {
         console.log("RESPONSE: ", response)
-        return response.data;
+        return response;
       }),
       catchError((error: any) => {
           return null

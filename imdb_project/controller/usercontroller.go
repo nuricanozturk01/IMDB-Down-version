@@ -17,10 +17,10 @@ type UserController struct {
 }
 
 func (c *UserController) SubscribeEndpoints(engine *gin.RouterGroup) {
-	engine.POST("/api/v1/user", c.CreateUser)
-	engine.GET("/api/v1/user/id", c.FindUserById)
-	engine.GET("/api/v1/user/all", c.FindAllUsers)
-	engine.GET("/api/v1/user/email", c.FindUserByEmail)
+	engine.POST("/user", c.CreateUser)
+	engine.GET("/user/id", c.FindUserById)
+	engine.GET("/user/all", c.FindAllUsers)
+	engine.GET("/user/email", c.FindUserByEmail)
 }
 
 func NewUserController(userService service.IUserService, validator *validator.Validate, store *sessions.CookieStore) *UserController {

@@ -5,6 +5,7 @@ import {MovieDTO, TvShowDTO} from "../../dto/dtos";
 import {NgbModal, NgbNavConfig} from "@ng-bootstrap/ng-bootstrap";
 import {RateComponent} from "../rate/rate.component";
 import {MessageService} from "../services/message.service";
+import {isLoggedIn} from "../navbar/navbar.component";
 
 @Component({
   selector: 'app-main-page',
@@ -28,6 +29,7 @@ export class MainPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.service.getUserInfo().subscribe((response: any) => {
+      console.log(response)
       if (response) {
         if (localStorage.getItem("email") === null || localStorage.getItem("email") === undefined) {
           localStorage.setItem("email", response.email)
@@ -70,15 +72,26 @@ export class MainPageComponent implements OnInit {
   }
 
   clickAddOnWatchList(movie: MovieDTO) {
-    this.service.addOnWatchList(movie.id).subscribe((response: string) => {
-      this.messageService.showSuccess("Success", response);
-    })
+    if (isLoggedIn()) {
+      this.service.addOnWatchList(movie.id).subscribe((response: string) => {
+        this.messageService.showSuccess("Success", response);
+      })
+    } else {
+      this.messageService.showWarning("Error", "You must be logged in to add this to your watchlist!");
+      this.route.navigate(['/sign-in']);
+    }
   }
 
   clickAddOnWatchListTv(tv: TvShowDTO) {
-    this.service.addOnWatchList(tv.id, "tv_show").subscribe((response: string) => {
-      this.messageService.showSuccess("Success", response);
-    })
+    if (isLoggedIn()) {
+      this.service.addOnWatchList(tv.id, "tv_show").subscribe((response: string) => {
+        this.messageService.showSuccess("Success", response);
+      })
+    } else {
+      this.messageService.showWarning("Error", "You must be logged in to add this to your watchlist!");
+      this.route.navigate(['/sign-in']);
+    }
+
   }
 
   clickRateMovie(movie: MovieDTO) {

@@ -6,5 +6,6 @@ type LoginDTO struct {
 }
 
 type AuthResponseDTO struct {
-	Token string `json:"token"`
+	Email  string `json:"email"`
+	UserID string `json:"user_id"`
 }

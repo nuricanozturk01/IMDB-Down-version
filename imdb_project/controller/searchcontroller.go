@@ -16,11 +16,13 @@ type SearchController struct {
 	Store            *sessions.CookieStore
 }
 
-func (c SearchController) SubscribeEndpoints(engine *gin.RouterGroup) {
-	engine.GET("/api/v1/search", c.Search)
-	engine.GET("/api/v1/celebrity/all", c.FindAllCelebrities)
-	engine.GET("/api/v1/celebrity", c.FindCelebrityByID)
-	engine.GET("/api/v1/watchlist", c.FindWatchList)
+func (c SearchController) SubscribeEndpoints(engine *gin.RouterGroup, protected *gin.RouterGroup) {
+	// public
+	engine.GET("/search", c.Search)
+	engine.GET("/celebrity", c.FindCelebrityByID)
+	// protected
+	protected.GET("/celebrity/all", c.FindAllCelebrities)
+	protected.GET("/watchlist", c.FindWatchList)
 }
 
 func NewSearchController(searchService *service.SearchService, celebrityService *service.CelebrityService, validator *validator.Validate,

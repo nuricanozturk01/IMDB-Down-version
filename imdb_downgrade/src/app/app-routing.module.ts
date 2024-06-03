@@ -12,15 +12,13 @@ import {MainPageComponent} from "./main-page/main-page.component";
 
 const routes: Routes = [
   {path: 'sign-in', component: LoginComponent},
-  {path: '', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
-  {path: 'details', component: DetailsComponent, canActivate: [authGuard]},
-  {path: 'tv-details', component: TvDetailsComponent, canActivate: [authGuard]},
-  {path: 'celebrity', component: CelebDetailsComponent, canActivate: [authGuard]},
+  {path: 'details', component: DetailsComponent},
+  {path: 'tv-details', component: TvDetailsComponent},
+  {path: 'celebrity', component: CelebDetailsComponent},
   {path: 'watch-list', component: WatchListComponent, canActivate: [authGuard]},
-  {path: 'main-page', component: MainPageComponent, canActivate: [authGuard]},
-  {path: '**', redirectTo: '/sign-in'}
-
+  {path: 'main-page', component: MainPageComponent},
+  {path: '**', redirectTo: 'sign-in'}
 ];
 
 @NgModule({

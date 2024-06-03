@@ -4,6 +4,7 @@ import {catchError, map, Observable} from "rxjs";
 import {LoginDTO} from "../../dto/LoginDTO";
 import {RegisterDTO} from "../../dto/dtos";
 import {Router} from "@angular/router";
+import {REQUEST_GOOGLE_LOGIN, REQUEST_LOGIN, REQUEST_LOGOUT, REQUEST_REGISTER} from "./connection";
 
 @Injectable({
   providedIn: 'root'
@@ -15,14 +16,13 @@ export class AuthenticationService {
 
 
   loginWithGoogle() {
-    window.location.href = 'http://localhost:5050/api/auth/google/login';
+    window.location.href = REQUEST_GOOGLE_LOGIN;
   }
 
 
   login(loginModel: LoginDTO): Observable<any> {
-    return this.http.post(`http://localhost:5050/api/auth/login`, loginModel, {withCredentials: true}).pipe(
+    return this.http.post(REQUEST_LOGIN, loginModel, {withCredentials: true}).pipe(
       map((response: any) => {
-        console.log('Response:', response);
         localStorage.setItem("email", response.data.email)
         localStorage.setItem("first_name", response.data.first_name)
         localStorage.setItem("last_name", response.data.last_name)
@@ -36,7 +36,7 @@ export class AuthenticationService {
   }
 
   register(dto: RegisterDTO) {
-    return this.http.post('http://localhost:5050/api/auth/register', dto).pipe(
+    return this.http.post(REQUEST_REGISTER, dto).pipe(
       map((response: any) => {
         return response.status_code === 201;
       }),
@@ -47,13 +47,10 @@ export class AuthenticationService {
   }
 
   logout(): Observable<boolean> {
-    return this.http.post('http://localhost:5050/api/auth/logout', {}, {withCredentials: true}).pipe(
+    return this.http.post(REQUEST_LOGOUT, {}, {withCredentials: true}).pipe(
       map((response: any) => {
-        if (response.status_code === 200) {
-          localStorage.clear();
-          return true;
-        }
-        return false;
+        localStorage.clear();
+        return true
       }),
       catchError((error: any) => {
         return [false];

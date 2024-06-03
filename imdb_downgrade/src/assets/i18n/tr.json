@@ -19,5 +19,12 @@
   "CITY": "Şehir",
   "PASSWORD_RULES": "En az 8 karakter, bir harf ve bir özel karakter içermelidir",
   "CELEBRITIES": "Ünlüler",
-  "LOGOUT": "Çıkış yap"
+  "LOGOUT": "Çıkış yap",
+  "OPTIONS": {
+    "ALL": "Hepsi",
+    "TITLES": "Başlıklar",
+    "TV_EPISODES": "TV Bölümleri",
+    "CELEBS": "Ünlüler",
+    "COMPANIES": "Şirketler"
+  }
 }

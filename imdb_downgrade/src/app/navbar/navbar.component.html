@@ -12,7 +12,7 @@
     <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" href="/watch-list">{{ 'WATCHLIST' | translate }}</a>
+          <a class="nav-link" style="cursor: pointer" (click)="handleClickWatchList()">{{ 'WATCHLIST' | translate }}</a>
         </li>
       </ul>
       <form class="d-flex mx-auto">
@@ -23,7 +23,7 @@
           </button>
           <ul class="dropdown-menu" style="z-index: 1001;">
             <li *ngFor="let option of options">
-              <a class="dropdown-item" href="#" (click)="selectOption(option)">{{ option }}</a>
+              <a class="dropdown-item" style="cursor: pointer" (click)="selectOption(option)">{{ option }}</a>
             </li>
           </ul>
           <input type="text" class="form-control" placeholder="{{'SEARCH_PLACEHOLDER' | translate}}" aria-label="Search"
@@ -31,6 +31,10 @@
         </div>
       </form>
       <ul class="navbar-nav ms-auto">
+
+        <li class="nav-item" *ngIf="isLoggedIn()">
+          <a class="nav-link" style="cursor: pointer">{{ getEmail() }}</a>
+        </li>
 
         <li class="nav-item">
           <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
@@ -51,11 +55,13 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="/sign-in">{{ 'SIGN_IN' | translate }}</a>
+          <a *ngIf="!isLoggedIn()" class="nav-link" href="/sign-in">{{ 'SIGN_IN' | translate }}</a>
         </li>
 
+
         <li class="nav-item">
-          <a class="nav-link" style="cursor: pointer" (click)="logout()">{{ 'LOGOUT' | translate }}</a>
+          <a *ngIf="isLoggedIn()" class="nav-link" style="cursor: pointer"
+             (click)="logout()">{{ 'LOGOUT' | translate }}</a>
         </li>
       </ul>
     </div>
@@ -63,10 +69,12 @@
 
 
   <div *ngIf="movies.length > 0 || tvShows.length > 0 || celebs.length > 0" class="results-container">
+
     <ul class="list-group" *ngIf="movies.length> 0">
       <div class="d-flex justify-content-center align-items-center ul-title">
         {{ 'MAIN_MENU_MOVIES_TITLE' | translate }}
       </div>
+
       <li class="list-group-item" *ngFor="let result of movies" (click)="handleClickMovie(result)">
         <img [src]="result.photos[0].url" alt="{{ result.name }}" class="img-thumbnail mr-2"
              style="width: 50px; height: 50px;">

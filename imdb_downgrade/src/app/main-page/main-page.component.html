@@ -21,7 +21,7 @@
                     <div class="justify-content-around d-flex">
                       <span class="card-text">{{ movie.average_rate }} ★</span>
                       <span class="card-text">
-                  <a href="#" (click)="clickRateMovie(movie)">
+                  <a style="cursor: pointer" (click)="clickRateMovie(movie)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-star"
                          viewBox="0 0 16 16">
@@ -79,7 +79,7 @@
                     <div class="justify-content-around d-flex">
                       <span class="card-text">{{ tvShow.average_rate }} ★</span>
                       <span class="card-text">
-                  <a href="#" (click)="clickRateTv(tvShow)">
+                  <a style="cursor: pointer" (click)="clickRateTv(tvShow)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-star"
                          viewBox="0 0 16 16">
@@ -96,7 +96,7 @@
               </span>
                     <h6 class="card-title">{{ tvShow.name }}</h6>
                     <footer class="d-flex justify-content-center mt-4">
-                      <button class="btn btn-dark" (click)="clickAddOnWatchListTv(tvShow)">
+                      <button class="btn btn-dark" (click)="  clickAddOnWatchListTv(tvShow)">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-plus-lg justify-content-center align-content-center" viewBox="0 0 16 16">
                           <path fill-rule="evenodd"
