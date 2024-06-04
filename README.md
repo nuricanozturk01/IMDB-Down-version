@@ -79,6 +79,7 @@ Create a slimmed down version of IMDB web application that will have following u
 
 ## Database Schema
 
+**Note:** The reason I designed the database this way is due to the features of the ORM tool in Go. Because of the language's structure, I had to design relationships such as one-to-many and many-to-many in this manner.
 <img src="/images/db.png" width="100%">
 
 ## Unit Tests
