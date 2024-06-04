@@ -52,6 +52,7 @@ Create a slimmed down version of IMDB web application that will have following u
 - SQLite3 (for testing)
 - Amazon Simple Queue Service (SQS) (for popularity calculation)
 - Angular
+    - Localization 
 
 ## Assumptions
 
